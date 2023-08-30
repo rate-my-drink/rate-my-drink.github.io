@@ -1,4 +1,5 @@
 <script setup>
+  import { supabase } from "./config/supabase.ts"
 </script>
 
 <template>
