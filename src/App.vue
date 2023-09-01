@@ -1,12 +1,15 @@
 <script setup>
 import { ref } from 'vue';
 import { supabase } from "./config/supabase.ts"
-
+import DrinkCard from "./components/DrinkCard.vue"
+import NavBar from './components/NavBar.vue';
 const drinks = ref([])
 async function fetchDrinks() {
   const { data, error } = await supabase
     .from('drinks')
-    .select('name', 'id')
+    .select('id, name, image_url, description')
+    .order('name', { ascending: true })
+    .limit(15)
   console.log(data, error)
   if (data === null) {
     drinks.value = []
@@ -17,11 +20,14 @@ fetchDrinks()
 </script>
 
 <template>
-  <div class="">
+  <NavBar />
+  <div class="w-full flex justify-center">
     <h1>Coffee and Tea app</h1>
-    <p>An app for all your coffee and tea rating. Find the best</p>
   </div>
-  <ul v-for="drink in drinks">
-    <li :key="drink.id">{{ drink.name }}</li>
-  </ul>
+  <div class="w-full flex justify-center h-full">
+
+    <div class="grid grid-cols-3 gap-4 w-2/3 bg-slate-200 h-full p-2 px-6">
+      <DrinkCard v-for="drink in drinks" :product="drink" />
+    </div>
+  </div>
 </template>
