@@ -4,9 +4,6 @@ import { ref } from 'vue';
 const props = defineProps(['product'])
 const product = ref(props.product);
 
-const addToCart = () => {
-    // You can implement your add to cart logic here
-};
 </script>
 <template>
     <div class="bg-white rounded-lg shadow-lg h-96">
