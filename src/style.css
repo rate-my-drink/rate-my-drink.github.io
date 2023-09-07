@@ -23,3 +23,9 @@
       @apply text-sm md:text-base;
     }
   }
+
+@layer components {
+  .button {
+    @apply w-full text-center py-3 m-1 rounded-xl text-black bg-amber-700 hover:bg-amber-500 focus:outline-none;
+  }
+}
