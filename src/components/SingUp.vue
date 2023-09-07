@@ -11,19 +11,19 @@ const clickBackground = (): void => {
 };
 
 async function signup() {
-    console.log("Create account")
     await supabase.auth.signUp({
         email: email.value,
         password: password.value
     })
+    emit('update:modelValue', false);
 }
 
 async function login() {
-    console.log("Login account", email.value, password.value)
     await supabase.auth.signInWithPassword({
         email: email.value,
         password: password.value
     })
+    emit('update:modelValue', false);
 }
 
 </script>
