@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { supabase } from "./config/supabase.ts"
 import DrinkCard from "./components/DrinkCard.vue"
 import NavBar from './components/NavBar.vue';
+
 const drinks = ref([])
 async function fetchDrinks() {
   const { data, error } = await supabase
