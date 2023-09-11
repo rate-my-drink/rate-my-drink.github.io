@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { supabase } from "../config/supabase"
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 
+const { login, signup } = inject('userName')
 const emit = defineEmits(['update:modelValue']);
 const email = ref("")
 const password = ref("")
@@ -10,19 +10,17 @@ const clickBackground = (): void => {
     emit('update:modelValue', false);
 };
 
-async function signup() {
-    await supabase.auth.signUp({
-        email: email.value,
-        password: password.value
-    })
+async function _signup() {
+    await signup(
+        email.value,
+        password.value
+    )
     emit('update:modelValue', false);
 }
 
-async function login() {
-    await supabase.auth.signInWithPassword({
-        email: email.value,
-        password: password.value
-    })
+async function _login() {
+    await login(email.value, password.value
+    )
     emit('update:modelValue', false);
 }
 
@@ -41,8 +39,8 @@ async function login() {
                         v-model="password" placeholder="Password" />
 
                     <div class="flex justify-between">
-                        <button type="button" class="button" @click="signup">Create Account</button>
-                        <button type="button" class="button" @click="login">Login</button>
+                        <button type="button" class="button" @click="_signup">Create Account</button>
+                        <button type="button" class="button" @click="_login">Login</button>
 
                     </div>
 
