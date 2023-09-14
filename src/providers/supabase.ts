@@ -31,7 +31,6 @@ async function updateUserName() {
   } else {
       userName.value = null
   }
-  console.log(session)
 }
 
 export function provideSupabase(app: App) {

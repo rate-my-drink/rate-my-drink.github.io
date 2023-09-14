@@ -10,7 +10,6 @@ async function fetchDrinks() {
         .select('id, name, image_url, description')
         .order('name', { ascending: true })
         .limit(15)
-    console.log(data, error)
     if (data === null) {
         drinks.value = []
     }
