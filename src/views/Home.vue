@@ -24,7 +24,7 @@ fetchDrinks()
     </div>
     <div class="w-full flex justify-center h-full">
 
-        <div class="grid grid-cols-3 gap-4 w-2/3 bg-slate-200 h-full p-2 px-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full lg:w-2/3 bg-slate-200 h-full p-2 px-6">
             <DrinkCard v-for="drink in drinks" :product="drink" />
         </div>
     </div>
