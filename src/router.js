@@ -17,10 +17,5 @@ export default createRouter({
       component: () => import("@/views/Drink.vue"),
       name: "Drink",
     },
-    // {
-    //   path: path_contact,
-    //   component: () => import("@/views/Contact.vue"),
-    //   name: "Contact",
-    // },
   ],
 });
