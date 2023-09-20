@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { supabase } from "../config/supabase.ts"
+import router from "../router.js"
 
 const error_message = ref(null)
 const producers = ref([])
@@ -41,6 +42,7 @@ async function uploadDrink() {
         return
     }
     error_message.value = null
+    router.push({ path: '/' })
 }
 </script>
 
