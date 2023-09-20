@@ -5,6 +5,7 @@ import router from "../router.js"
 
 const error_message = ref(null)
 const producers = ref([])
+const producer_id = ref(null)
 const image_url = ref("")
 const name = ref("")
 const description = ref("")
@@ -19,7 +20,8 @@ async function getProducers() {
         console.log(error)
         return
     }
-    producers.value = data
+    const sorted_producers = data.sort((a, b) => a.name.localeCompare(b.name))
+    producers.value = sorted_producers
 }
 
 // Upload a drink to supabase
@@ -29,7 +31,7 @@ async function uploadDrink() {
         .insert({
             name: name.value,
             description: description.value,
-            // image_url: image_url.value
+            producer: producer_id.value
         })
 
     if (error) { 
@@ -44,6 +46,8 @@ async function uploadDrink() {
     error_message.value = null
     router.push({ path: '/' })
 }
+
+getProducers()
 </script>
 
 <template>
@@ -60,6 +64,10 @@ async function uploadDrink() {
                     v-model="name" placeholder="Name of drink" />
                     <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkDescription"
                     v-model="description" placeholder="Description of the drink" />
+                    <select class="block border border-grey-light w-full p-3 rounded mb-4" v-model="producer_id">
+                        <option value="" disabled selected>Select a producer</option>
+                        <option v-for="producer in producers" :key="producer.id" :value="producer.id">{{ producer.name }}</option>
+                    </select>
                     <button type="button" class="button" @click="uploadDrink">Upload</button>
                 </div>
             </div>
