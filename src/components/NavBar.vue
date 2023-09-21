@@ -13,10 +13,12 @@ const showSignUp = ref(false)
     <SingUp v-show="showSignUp" v-model="showSignUp" />
     <div class="flex items-center justify-around bg-amber-500 py-6">
         <router-link class="text-2xl font-bold text-black px-4" to="/">Home</router-link>
-        <button v-if="userName === null" @click="showSignUp = !showSignUp" class="text-2xl font-bold text-black px-4">Sign
-            up</button>
         <button v-if="userName" @click="logout()" class="text-2xl font-bold text-black px-4">Sign out</button>
-        {{ userName ? userName : "Not yet logged in" }}
+        <button v-else @click="showSignUp = !showSignUp" class="text-2xl font-bold text-black px-4">
+            Sign up</button>
+        <span>
+            {{ userName ? userName : "Not yet logged in" }}
+        </span>
     </div>
 </template>
   
