@@ -20,7 +20,6 @@ async function fetchDrink() {
         description.value = ""
         return
     }
-    console.log(data)
     image_url.value = data.image_url
     name.value = data.name
     description.value = data.description
