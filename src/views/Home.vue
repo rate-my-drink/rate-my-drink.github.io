@@ -21,7 +21,7 @@ fetchDrinks()
 
 <template>
     <div class="w-full flex justify-center">
-        <h1>Coffee and Tea app</h1>
+        <h1>Caffeine Critics</h1>
     </div>
     <div class="w-full flex justify-center h-full">
         <div class="w-full flex flex-col justify-center lg:w-2/3 bg-slate-200 h-full p-2 px-6">
