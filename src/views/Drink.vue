@@ -2,6 +2,7 @@
 import { useRoute } from 'vue-router'
 import { ref } from 'vue';
 import { supabase } from "../config/supabase.ts"
+import Reviews from "./subviews/Reviews.vue"
 
 const route = useRoute()
 const drinkId = route.params.id
@@ -27,6 +28,7 @@ async function fetchDrink() {
     producer.value = data.producer.name
 }
 fetchDrink()
+
 </script>
 
 <template>
@@ -41,9 +43,7 @@ fetchDrink()
                     <p class="text-gray-700 mb-4">{{ description }}</p>
                 </div>
             </div>
-            <div class="flex justify-center">
-                <button class="button w-3/4">Add review</button>
-            </div>
+            <reviews :drinkId="drinkId" />
         </div>
     </div>
 </template>
