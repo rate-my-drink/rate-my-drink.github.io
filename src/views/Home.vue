@@ -5,18 +5,21 @@ import DrinkCard from "../components/DrinkCard.vue"
 import { RouterLink } from 'vue-router'
 
 const drinks = ref([])
-async function fetchDrinks() {
-    const { data } = await supabase
-        .from('drinks')
-        .select('id, name, image_url, description')
-        .order('name', { ascending: true })
-        .limit(15)
-    if (data === null) {
-        drinks.value = []
-    }
-    drinks.value = data
-}
-fetchDrinks()
+
+supabase
+    .from('drinks')
+    .select('id, name, image_url, description')
+    .order('name', { ascending: true })
+    .limit(15)
+    .then((res) => {
+        const data = res.data
+        if (data === null) {
+            drinks.value = []
+            return
+        }
+        drinks.value = data
+    })
+
 </script>
 
 <template>
