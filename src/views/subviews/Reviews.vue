@@ -33,6 +33,13 @@ async function uploadReview() {
         errorMessage.value = "There was an error uploading your review"
         return
     }
+    let newReviews = allReviews.value
+    newReviews.push({
+        message: reviewText.value,
+        score: reviewRating.value,
+        created_at: "just now"
+    })
+    allReviews.value = newReviews
     errorMessage.value = null
 }
 
