@@ -11,12 +11,31 @@ async function login(email: string, password: string) {
   updateUserName()
 }
 
-async function signup(email: string, password: string) {
-  await supabase.auth.signUp({
+async function signup(email: string, password: string, name: string | undefined = undefined) {
+  supabase.auth.signUp({
       email,
       password
   })
-  updateUserName()
+  .then((res) => {
+    console.log(res)
+    const newId = res.data.user.id
+    if(newId){
+      userId.value = newId
+    }else{
+      userId.value = undefined
+      return
+    }
+    supabase.from("user_profiles").insert({
+      user_id: userId.value,
+      name
+    }).then(
+      (res) => {
+        console.log(res)
+      userName.value = name
+      }
+    )
+  }    
+  )
 }
 
 async function logout() {
