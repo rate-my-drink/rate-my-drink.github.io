@@ -43,16 +43,30 @@ async function logout() {
   updateUserName()
 }
 
-
 async function updateUserName() {
-  const session = await supabase.auth.getSession()
-  if (session.data && session.data.session) {
-      userName.value = session.data.session.user.email
-      userId.value = session.data.session.user.id
-  } else {
-      userName.value = undefined
+  // Get user ID
+  supabase.auth.getSession().then((res) => {
+    const _session = res.data.session
+    if(!_session){
       userId.value = undefined
+      userName.value = undefined
+      return
+    }
+    const newUserId = _session.user.id
+
+    if (newUserId) {
+        userId.value = newUserId
+    } else {
+      userId.value = undefined
+      userName.value = undefined
+      return
+    }
+    supabase.from("user_profiles").select("name").then((res) => {
+      userName.value = res.data[0].name
+    }
+    )
   }
+)
 }
 
 export function provideSupabase(app: App) {
