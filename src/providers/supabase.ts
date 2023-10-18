@@ -11,12 +11,31 @@ async function login(email: string, password: string) {
   updateUserName()
 }
 
-async function signup(email: string, password: string) {
-  await supabase.auth.signUp({
+async function signup(email: string, password: string, name: string | undefined = undefined) {
+  supabase.auth.signUp({
       email,
       password
   })
-  updateUserName()
+  .then((res) => {
+    console.log(res)
+    const newId = res.data.user.id
+    if(newId){
+      userId.value = newId
+    }else{
+      userId.value = undefined
+      return
+    }
+    supabase.from("user_profiles").insert({
+      user_id: userId.value,
+      name
+    }).then(
+      (res) => {
+        console.log(res)
+      userName.value = name
+      }
+    )
+  }    
+  )
 }
 
 async function logout() {
@@ -24,16 +43,35 @@ async function logout() {
   updateUserName()
 }
 
-
 async function updateUserName() {
-  const session = await supabase.auth.getSession()
-  if (session.data && session.data.session) {
-      userName.value = session.data.session.user.email
-      userId.value = session.data.session.user.id
-  } else {
-      userName.value = undefined
+  // Get user ID
+  supabase.auth.getSession().then((res) => {
+    const _session = res.data.session
+    if(!_session){
       userId.value = undefined
+      userName.value = undefined
+      return
+    }
+    const newUserId = _session.user.id
+
+    if (newUserId) {
+        userId.value = newUserId
+    } else {
+      userId.value = undefined
+      userName.value = undefined
+      return
+    }
+    supabase.from("user_profiles").select("name").then((res) => {
+      const data = res.data
+      if(data){
+        userName.value = data[0].name
+      }else{
+        userName.value = undefined
+      }
+    }
+    )
   }
+)
 }
 
 export function provideSupabase(app: App) {
