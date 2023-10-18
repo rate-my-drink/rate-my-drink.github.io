@@ -62,7 +62,12 @@ async function updateUserName() {
       return
     }
     supabase.from("user_profiles").select("name").then((res) => {
-      userName.value = res.data[0].name
+      const data = res.data
+      if(data){
+        userName.value = data[0].name
+      }else{
+        userName.value = undefined
+      }
     }
     )
   }
