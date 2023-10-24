@@ -71,7 +71,7 @@ getDrinks()
                     Previous page
                 </button>
                 <span>
-                    {{ currentPage }} of {{ totalNumPages }}
+                    {{ currentPage + 1 }} of {{ totalNumPages + 1 }}
                 </span>
                 <button class="bg-red-400 p-2 px-4 rounded-r-full m-2" @click="nextPage()">
                     Next page
