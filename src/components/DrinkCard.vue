@@ -7,11 +7,11 @@ const product = ref(props.product);
 
 </script>
 <template>
-    <router-link class="bg-white rounded-lg shadow-lg h-96" :to="'/drink/' + product.id">
-        <img :src="product.image_url" alt="Product Image" class="rounded-t-lg w-full h-48 object-cover">
+    <router-link class="bg-white rounded-lg shadow-lg h-96 overflow-hidden text-ellipsis" :to="'/drink/' + product.id">
+        <img :src="product.image_url" alt="Product Image" class="rounded-t-lg w-full h-48 object-cover"/>
         <div class="p-4 h-full">
             <h2 class="text-xl font-semibold mb-2">{{ product.name }}</h2>
-            <p class="text-gray-700 overflow-hidden text-ellipsis">{{ product.description }}</p>
+            <p class="text-gray-700">{{ product.description }}</p>
         </div>
     </router-link>
 </template>
