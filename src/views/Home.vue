@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { supabase } from "../config/supabase.ts"
-import DrinkCard from "../components/DrinkCard.vue"
+import { supabase } from "@/config/supabase.ts"
+import DrinkCard from "@/components/DrinkCard.vue"
 import { RouterLink } from 'vue-router'
 
 const drinks = ref([])
