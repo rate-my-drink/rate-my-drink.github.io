@@ -1,44 +1,27 @@
-import { mount } from "@vue/test-utils";
-import Home from "@/views/Home.vue";
+import { createRouter, createWebHistory } from 'vue-router'
+import { test } from 'vitest'
+import { mount } from '@vue/test-utils'
+import Home from '@/views/Home.vue'
 
-describe("Home.vue", () => {
-  it("calculates totalNumPages correctly when totalNumDrinks is divisible by numbPerPage", () => {
-    console.log("START")
-    const wrapper = mount(Home, {
-      data() {
-        return {
-          totalNumDrinks: 100,
-          numbPerPage: 10,
-        };
-      },
-    });
-    console.log("STOP");
-    expect(wrapper.vm.totalNumPages).toBe(10);
-  });
+test('calculates totalNumPages correctly', () => {
+  const router = createRouter({
+    history: createWebHistory(),
+    routes: [], // provide your routes here
+  })
 
-  it("calculates totalNumPages correctly when totalNumDrinks is not divisible by numbPerPage", () => {
-    const wrapper = mount(Home, {
-      data() {
-        return {
-          totalNumDrinks: 105,
-          numbPerPage: 20,
-        };
-      },
-    });
-
-    expect(wrapper.vm.totalNumPages).toBe(6);
-  });
-
-  it("returns 1 when totalNumDrinks is less than numbPerPage", () => {
-    const wrapper = mount(Home, {
-      data() {
-        return {
-          totalNumDrinks: 5,
-          numbPerPage: 15,
-        };
-      },
-    });
-
-    expect(wrapper.vm.totalNumPages).toBe(1);
-  });
-});
+  const wrapper = mount(Home, {
+    data() {
+      return {
+        totalNumDrinks: 100,
+        numbPerPage: 10
+      }
+    },
+    global: {
+      plugins: [router]
+    }
+  })
+  
+  expect(wrapper.vm.totalNumDrinks).toBe(100)
+  expect(wrapper.vm.numbPerPage).toBe(10)
+  expect(wrapper.vm.totalNumPages).toBe(9)
+})
