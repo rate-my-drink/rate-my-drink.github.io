@@ -8,7 +8,11 @@ const drinks = ref([])
 const numbPerPage = ref(15)
 const currentPage = ref(0)
 const totalNumDrinks = ref(0)
-const totalNumPages = computed(() => Math.max(1, Math.ceil(totalNumDrinks.value / numbPerPage.value) - 1))
+
+// Get the maximum page number for the current number of drinks
+// This is based on array counting so the max page number is 1 less than the actual number of pages
+// Because the first page is page 0
+const maxPageNum = computed(() => Math.max(0, Math.ceil(totalNumDrinks.value / numbPerPage.value) - 1))
 
 // Get the total number of drinks in the database
 supabase
@@ -38,7 +42,7 @@ function getDrinks() {
 }
 
 function nextPage() {
-    if (currentPage.value >= totalNumPages.value) return
+    if (currentPage.value >= maxPageNum.value) return
     currentPage.value += 1
     getDrinks()
 }
@@ -71,7 +75,7 @@ getDrinks()
                     Previous page
                 </button>
                 <span>
-                    {{ currentPage + 1 }} of {{ totalNumPages + 1 }}
+                    {{ currentPage + 1 }} of {{ maxPageNum + 1 }}
                 </span>
                 <button class="bg-red-400 p-2 px-4 rounded-r-full m-2" @click="nextPage()">
                     Next page
