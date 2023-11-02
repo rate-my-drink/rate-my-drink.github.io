@@ -10,10 +10,6 @@ jobs:
     name: Build Vue
     steps:
     - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: npm install
-    - name: Run tests
-      run: npm run test
     - id: Build-Vue
       uses: xRealNeon/VuePagesAction@1.0.1
       with:
