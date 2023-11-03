@@ -8,7 +8,8 @@ const drinks = ref([])
 const numbPerPage = ref(15)
 const currentPage = ref(0)
 const totalNumDrinks = ref(0)
-
+const searchTerm = ref('')
+const isLoading = ref(true)
 // Get the maximum page number for the current number of drinks
 // This is based on array counting so the max page number is 1 less than the actual number of pages
 // Because the first page is page 0
@@ -26,11 +27,33 @@ supabase
 function getDrinks() {
     const startDrink = currentPage.value * numbPerPage.value
     const stopDrink = (currentPage.value + 1) * numbPerPage.value - 1
+    isLoading.value = true
+    if (searchTerm.value === '') {
+        supabase
+            .from('drinks')
+            .select('id, name, image_url, description')
+            .order('name', { ascending: true })
+            .range(startDrink, stopDrink)
+            .then((res) => {
+                const data = res.data
+                if (data === null) {
+                    drinks.value = []
+                    return
+                }
+                drinks.value = data
+                isLoading.value = false
+            })
+    } else {
+        searchDrinks()
+    }
+}
+
+function searchDrinks() {
     supabase
         .from('drinks')
         .select('id, name, image_url, description')
+        .textSearch('name', searchTerm.value)
         .order('name', { ascending: true })
-        .range(startDrink, stopDrink)
         .then((res) => {
             const data = res.data
             if (data === null) {
@@ -38,6 +61,7 @@ function getDrinks() {
                 return
             }
             drinks.value = data
+            isLoading.value = false
         })
 }
 
@@ -69,8 +93,10 @@ getDrinks()
             <div class="flex justify-center w-full">
                 <router-link class="text-2xl font-bold w-4/5 button m-4" to="/add-drink">Add Drink</router-link>
             </div>
+            <div class="flex justify-center w-full">
+                <input type="text" v-model="searchTerm" class="border border-gray-400 rounded py-2 px-4" placeholder="Search drinks..." @change="getDrinks()">
+            </div>
             <div class="flex justify-between">
-
                 <button class="bg-red-400 p-2 px-4 rounded-l-full m-2" @click="previousPage()">
                     Previous page
                 </button>
