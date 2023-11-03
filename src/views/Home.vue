@@ -16,18 +16,13 @@ const isLoading = ref(true)
 const maxPageNum = computed(() => Math.max(0, Math.ceil(totalNumDrinks.value / numbPerPage.value) - 1))
 
 // Get the total number of drinks in the database
-supabase
-    .from('drinks')
-    .select('*', { count: 'exact', head: true })
-    .then((res) => {
-        totalNumDrinks.value = res.count
-    }
-    )
+
 
 function getDrinks() {
     const startDrink = currentPage.value * numbPerPage.value
     const stopDrink = (currentPage.value + 1) * numbPerPage.value - 1
     isLoading.value = true
+    console.log("Loading")
     if (searchTerm.value === '') {
         supabase
             .from('drinks')
@@ -42,18 +37,30 @@ function getDrinks() {
                 }
                 drinks.value = data
                 isLoading.value = false
+                console.log("Not Loading")
             })
+
+        supabase
+            .from('drinks')
+            .select('*', { count: 'exact', head: true })
+            .then((res) => {
+                totalNumDrinks.value = res.count
+            }
+            )
     } else {
         searchDrinks()
     }
 }
 
 function searchDrinks() {
+    const startDrink = currentPage.value * numbPerPage.value
+    const stopDrink = (currentPage.value + 1) * numbPerPage.value - 1
     supabase
         .from('drinks')
         .select('id, name, image_url, description')
-        .textSearch('name', searchTerm.value)
+        .textSearch('name', `${searchTerm.value}~`)
         .order('name', { ascending: true })
+        .range(startDrink, stopDrink)
         .then((res) => {
             const data = res.data
             if (data === null) {
@@ -62,7 +69,17 @@ function searchDrinks() {
             }
             drinks.value = data
             isLoading.value = false
+            console.log("Not Loading")
         })
+
+    supabase
+        .from('drinks')
+        .select('*', { count: 'exact', head: true })
+        .textSearch('name', `${searchTerm.value}`)
+        .then((res) => {
+            totalNumDrinks.value = res.count
+        }
+        )
 }
 
 function nextPage() {
@@ -94,9 +111,13 @@ getDrinks()
                 <router-link class="text-2xl font-bold w-4/5 button m-4" to="/add-drink">Add Drink</router-link>
             </div>
             <div class="flex justify-center w-full">
-                <input type="text" v-model="searchTerm" class="border border-gray-400 rounded py-2 px-4" placeholder="Search drinks..." @change="getDrinks()">
+                <input type="text" v-model="searchTerm" class="border border-gray-400 rounded py-2 px-4"
+                    placeholder="Search drinks..." @input="getDrinks()">
             </div>
-            <div class="flex justify-between">
+            <div v-if="isLoading">
+                loading
+            </div>
+            <div v-else class="flex justify-between">
                 <button class="bg-red-400 p-2 px-4 rounded-l-full m-2" @click="previousPage()">
                     Previous page
                 </button>
