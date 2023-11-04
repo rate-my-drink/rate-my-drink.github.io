@@ -14,53 +14,26 @@ const isLoading = ref(true)
 // This is based on array counting so the max page number is 1 less than the actual number of pages
 // Because the first page is page 0
 const maxPageNum = computed(() => Math.max(0, Math.ceil(totalNumDrinks.value / numbPerPage.value) - 1))
-
+const startDrink = computed(() => currentPage.value * numbPerPage.value)
+const stopDrink = computed(() => (currentPage.value + 1) * numbPerPage.value - 1)
 // Get the total number of drinks in the database
 
 
 function getDrinks() {
-    const startDrink = currentPage.value * numbPerPage.value
-    const stopDrink = (currentPage.value + 1) * numbPerPage.value - 1
     isLoading.value = true
-    console.log("Loading")
     if (searchTerm.value === '') {
-        supabase
-            .from('drinks')
-            .select('id, name, image_url, description')
-            .order('name', { ascending: true })
-            .range(startDrink, stopDrink)
-            .then((res) => {
-                const data = res.data
-                if (data === null) {
-                    drinks.value = []
-                    return
-                }
-                drinks.value = data
-                isLoading.value = false
-                console.log("Not Loading")
-            })
-
-        supabase
-            .from('drinks')
-            .select('*', { count: 'exact', head: true })
-            .then((res) => {
-                totalNumDrinks.value = res.count
-            }
-            )
+        getAllDrinks()
     } else {
         searchDrinks()
     }
 }
 
-function searchDrinks() {
-    const startDrink = currentPage.value * numbPerPage.value
-    const stopDrink = (currentPage.value + 1) * numbPerPage.value - 1
+function getAllDrinks() {
     supabase
         .from('drinks')
         .select('id, name, image_url, description')
-        .textSearch('name', `${searchTerm.value}~`)
         .order('name', { ascending: true })
-        .range(startDrink, stopDrink)
+        .range(startDrink.value, stopDrink.value)
         .then((res) => {
             const data = res.data
             if (data === null) {
@@ -69,13 +42,47 @@ function searchDrinks() {
             }
             drinks.value = data
             isLoading.value = false
-            console.log("Not Loading")
         })
 
     supabase
         .from('drinks')
         .select('*', { count: 'exact', head: true })
-        .textSearch('name', `${searchTerm.value}`)
+        .then((res) => {
+            totalNumDrinks.value = res.count
+        }
+        )
+}
+
+function searchDrinks() {
+    // Split the string on spaces
+    const allWords = searchTerm.value.split(" ").filter(word => word !== "");
+
+    // Add ":*" to each split element using map
+    const allFuzzyWords = allWords.map(word => word + ":*");
+
+    // Join the modified elements back together using join with a space separator
+    const searchString = allFuzzyWords.join(" & ");
+
+    supabase
+        .from('drinks')
+        .select('id, name, image_url, description')
+        .textSearch('name', searchString)
+        .order('name', { ascending: true })
+        .range(startDrink.value, stopDrink.value)
+        .then((res) => {
+            const data = res.data
+            if (data === null) {
+                drinks.value = []
+                return
+            }
+            drinks.value = data
+            isLoading.value = false
+        })
+
+    supabase
+        .from('drinks')
+        .select('*', { count: 'exact', head: true })
+        .textSearch('name', searchString)
         .then((res) => {
             totalNumDrinks.value = res.count
         }
