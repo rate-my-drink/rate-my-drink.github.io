@@ -118,7 +118,7 @@ getDrinks()
                 <router-link class="text-2xl font-bold w-4/5 button m-4" to="/add-drink">Add Drink</router-link>
             </div>
             <div class="flex justify-center w-full">
-                <input type="text" v-model="searchTerm" class="border border-gray-400 rounded py-2 px-4"
+                <input type="text" v-model="searchTerm" class="border border-gray-400 w-3/5 rounded py-2 px-4"
                     placeholder="Search drinks..." @input="getDrinks()">
             </div>
             <div v-if="isLoading">
