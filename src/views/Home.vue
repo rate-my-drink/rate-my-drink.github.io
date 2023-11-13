@@ -66,7 +66,7 @@ function searchDrinks() {
     supabase
         .from('drinks')
         .select('id, name, image_url, description')
-        .textSearch('name', searchString)
+        .textSearch('fts', searchString)
         .order('name', { ascending: true })
         .range(startDrink.value, stopDrink.value)
         .then((res) => {
@@ -82,7 +82,7 @@ function searchDrinks() {
     supabase
         .from('drinks')
         .select('*', { count: 'exact', head: true })
-        .textSearch('name', searchString)
+        .textSearch('fts', searchString)
         .then((res) => {
             totalNumDrinks.value = res.count
         }
