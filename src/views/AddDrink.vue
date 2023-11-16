@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'
 import { supabase } from "../config/supabase.ts"
 import router from "../router.js"
 import { inject } from 'vue'
@@ -18,7 +18,7 @@ async function getProducers() {
         .from('producers')
         .select('id, name')
 
-    if (error) { 
+    if (error) {
         console.log(error)
         return
     }
@@ -37,17 +37,34 @@ async function uploadDrink() {
             user_id: userId.value
         })
 
-    if (error) { 
+    if (error) {
         console.log(error.status)
-        if(error.status === 401) {
+        if (error.status === 401) {
             errorMessage.value = "You must be logged in to upload a drink"
             return
-        }       
+        }
         errorMessage.value = "There was an error uploading your drink"
         return
     }
     errorMessage.value = null
     router.push({ path: '/' })
+}
+
+const newImageCanvas = ref(null)
+
+onMounted(() => {
+    newImageCanvas.value.focus()
+})
+
+function uploadImage(e) {
+    const image = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onload = e => {
+        const previewImage = e.target.result;
+        console.log(previewImage);
+        console.log(newImageCanvas.value);
+    };
 }
 
 getProducers()
@@ -61,15 +78,17 @@ getProducers()
                 {{ errorMessage }}
             </div>
             <div class="flex flex-col md:flex-row justify-start h-full w-full">
-                <img :src="imageUrl" alt="Product Image" class="rounded-t-lg h-full w-full md:w-1/2 object-cover">
+                <canvas ref="newImageCanvas" class="rounded-t-lg h-full w-full md:w-1/2 object-cover"></canvas>
+                <input type="file" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
                 <div class="p-4 w-full md:w-1/2 ">
                     <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkName"
-                    v-model="name" placeholder="Name of drink" />
-                    <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkDescription"
-                    v-model="description" placeholder="Description of the drink" />
+                        v-model="name" placeholder="Name of drink" />
+                    <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="drinkDescription" v-model="description" placeholder="Description of the drink" />
                     <select class="block border border-grey-light w-full p-3 rounded mb-4" v-model="producerId">
                         <option value="" disabled selected>Select a producer</option>
-                        <option v-for="producer in producers" :key="producer.id" :value="producer.id">{{ producer.name }}</option>
+                        <option v-for="producer in producers" :key="producer.id" :value="producer.id">{{ producer.name }}
+                        </option>
                     </select>
                     <button type="button" class="button" @click="uploadDrink">Upload</button>
                 </div>
