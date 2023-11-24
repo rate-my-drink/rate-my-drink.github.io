@@ -8,7 +8,7 @@ const { userId } = inject('userName')
 const errorMessage = ref(null)
 const producers = ref([])
 const producerId = ref(null)
-const imageUrl = ref("")
+const previewImage = ref("")
 const name = ref("")
 const description = ref("")
 
@@ -61,9 +61,10 @@ function uploadImage(e) {
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = e => {
-        const previewImage = e.target.result;
-        console.log(previewImage);
+        previewImage.value = e.target.result;
+        console.log(previewImage.value);
         console.log(newImageCanvas.value);
+        console.log(e)
     };
 }
 
@@ -78,7 +79,9 @@ getProducers()
                 {{ errorMessage }}
             </div>
             <div class="flex flex-col md:flex-row justify-start h-full w-full">
-                <canvas ref="newImageCanvas" class="rounded-t-lg h-full w-full md:w-1/2 object-cover"></canvas>
+                <canvas v-show="false" ref="newImageCanvas"
+                    class="rounded-t-lg h-full w-full md:w-1/2 object-cover"></canvas>
+                <img :src="previewImage" class="w-full h-full" />
                 <input type="file" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
                 <div class="p-4 w-full md:w-1/2 ">
                     <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkName"
