@@ -50,12 +50,6 @@ async function uploadDrink() {
     router.push({ path: '/' })
 }
 
-const newImageCanvas = ref(null)
-
-onMounted(() => {
-    newImageCanvas.value.focus()
-})
-
 function uploadImage(e) {
     const image = e.target.files[0];
     const reader = new FileReader();
@@ -63,7 +57,6 @@ function uploadImage(e) {
     reader.onload = e => {
         previewImage.value = e.target.result;
         console.log(previewImage.value);
-        console.log(newImageCanvas.value);
         console.log(e)
     };
 }
@@ -79,10 +72,12 @@ getProducers()
                 {{ errorMessage }}
             </div>
             <div class="flex flex-col md:flex-row justify-start h-full w-full">
-                <canvas v-show="false" ref="newImageCanvas"
-                    class="rounded-t-lg h-full w-full md:w-1/2 object-cover"></canvas>
-                <img :src="previewImage" class="w-full h-full" />
-                <input type="file" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
+                <label class="cursor-pointer">
+                    <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
+                    Custom Upload
+                    <img :src="previewImage" class="w-full h-full" />
+                </label>
+
                 <div class="p-4 w-full md:w-1/2 ">
                     <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkName"
                         v-model="name" placeholder="Name of drink" />
