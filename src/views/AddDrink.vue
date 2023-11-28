@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { supabase } from "../config/supabase.ts"
 import router from "../router.js"
 import { inject } from 'vue'
@@ -56,8 +56,6 @@ function uploadImage(e) {
     reader.readAsDataURL(image);
     reader.onload = e => {
         previewImage.value = e.target.result;
-        console.log(previewImage.value);
-        console.log(e)
     };
 }
 
@@ -72,12 +70,6 @@ getProducers()
                 {{ errorMessage }}
             </div>
             <div class="flex flex-col md:flex-row justify-start h-full w-full">
-                <label class="cursor-pointer">
-                    <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
-                    Custom Upload
-                    <img :src="previewImage" class="w-full h-full" />
-                </label>
-
                 <div class="p-4 w-full md:w-1/2 ">
                     <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkName"
                         v-model="name" placeholder="Name of drink" />
@@ -90,6 +82,12 @@ getProducers()
                     </select>
                     <button type="button" class="button" @click="uploadDrink">Upload</button>
                 </div>
+
+                <label class="md:w-1/2 h-full p-2">
+                    <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
+                    Upload your image
+                    <img :src="previewImage" class="w-full h-full" />
+                </label>
             </div>
         </div>
     </div>
