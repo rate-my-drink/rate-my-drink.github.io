@@ -80,14 +80,19 @@ getProducers()
                         <option v-for="producer in producers" :key="producer.id" :value="producer.id">{{ producer.name }}
                         </option>
                     </select>
-                    <button type="button" class="button" @click="uploadDrink">Upload</button>
+
                 </div>
 
-                <label class="md:w-1/2 h-full p-2">
+                <label class="md:w-1/2 h-full p-2 outline m-2">
                     <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
-                    Upload your image
+                    <span v-show="!previewImage">
+                        Upload a image
+                    </span>
                     <img :src="previewImage" class="w-full h-full" />
                 </label>
+            </div>
+            <div class="flex justify-center">
+                <button type="button" class="button md:w-4/5" @click="uploadDrink">Upload</button>
             </div>
         </div>
     </div>
