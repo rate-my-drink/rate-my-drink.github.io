@@ -71,19 +71,28 @@ getProducers()
             </div>
             <div class="flex flex-col md:flex-row justify-start h-full w-full">
                 <div class="p-4 w-full md:w-1/2 ">
-                    <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkName"
-                        v-model="name" placeholder="Name of drink" />
-                    <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4"
-                        name="drinkDescription" v-model="description" placeholder="Description of the drink" />
-                    <select class="block border border-grey-light w-full p-3 rounded mb-4" v-model="producerId">
-                        <option value="" disabled selected>Select a producer</option>
-                        <option v-for="producer in producers" :key="producer.id" :value="producer.id">{{ producer.name }}
-                        </option>
-                    </select>
-
+                    <div>
+                        <label class="text-gray-500">Name of the drink</label>
+                        <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkName"
+                            v-model="name" placeholder="Name of the drink" />
+                    </div>
+                    <div>
+                        <label class="text-gray-500">Description of the drink</label>
+                        <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4"
+                            name="drinkDescription" v-model="description" placeholder="Description of the drink" />
+                    </div>
+                    <div>
+                        <label class="text-gray-500">Producer</label>
+                        <select class="block border border-grey-light w-full p-3 rounded mb-4" v-model="producerId">
+                            <option value="" disabled selected>Select a producer</option>
+                            <option v-for="producer in producers" :key="producer.id" :value="producer.id">{{ producer.name
+                            }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
 
-                <label class="md:w-1/2 h-full p-2 outline m-2">
+                <label class="md:w-1/2 h-full p-2 outline m-2 outline-gray-400 rounded-xl">
                     <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
                     <span v-show="!previewImage">
                         Upload a image
