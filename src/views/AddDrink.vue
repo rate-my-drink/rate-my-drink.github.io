@@ -93,7 +93,8 @@ getProducers()
                 </div>
 
                 <label class="md:w-1/2 h-full p-2 outline m-2 outline-gray-400 rounded-xl">
-                    <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg" @change=uploadImage>
+                    <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg, image/webp"
+                        @change=uploadImage>
                     <span v-show="!previewImage">
                         Upload a image
                     </span>
