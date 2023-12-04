@@ -26,28 +26,55 @@ async function getProducers() {
     producers.value = sorted_producers
 }
 
-// Upload a drink to supabase
-async function uploadDrink() {
-    const { error } = await supabase
-        .from('drinks')
-        .insert({
-            name: name.value,
-            description: description.value,
-            producer: producerId.value,
-            user_id: userId.value
+function uuidv4() {
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
+async function upload_image() {
+    const { data, error } = await supabase
+        .storage
+        .from('coffee-images')
+        .upload(`public/${uuidv4()}.webp`, previewImage.value, {
+            cacheControl: '3600',
+            upsert: false
         })
 
     if (error) {
-        console.log(error.status)
-        if (error.status === 401) {
-            errorMessage.value = "You must be logged in to upload a drink"
-            return
-        }
-        errorMessage.value = "There was an error uploading your drink"
+        console.error(error_upload_img)
         return
     }
-    errorMessage.value = null
-    router.push({ path: '/' })
+    return data.path
+}
+// Upload a drink to supabase
+async function uploadDrink() {
+    const imgPath = await upload_image()
+    let { data, error } = supabase
+        .storage
+        .from('coffee-images')
+        .getPublicUrl(imgPath)
+    console.log(data.publicUrl)
+    // const { error } = await supabase
+    //     .from('drinks')
+    //     .insert({
+    //         name: name.value,
+    //         description: description.value,
+    //         producer: producerId.value,
+    //         user_id: userId.value
+    //     })
+
+    // if (error) {
+    //     console.log(error.status)
+    //     if (error.status === 401) {
+    //         errorMessage.value = "You must be logged in to upload a drink"
+    //         return
+    //     }
+    //     errorMessage.value = "There was an error uploading your drink"
+    //     return
+    // }
+    // errorMessage.value = null
+    // router.push({ path: '/' })
 }
 
 function uploadImage(e) {
@@ -93,8 +120,8 @@ getProducers()
                 </div>
 
                 <label class="md:w-1/2 h-full p-2 outline m-2 outline-gray-400 rounded-xl">
-                    <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg, image/webp"
-                        @change=uploadImage>
+                    <!--TODO add image/jpeg, image/png, image/jpg, -->
+                    <input type="file" class="hidden" accept="image/webp" @change=uploadImage>
                     <span v-show="!previewImage">
                         Upload a image
                     </span>
