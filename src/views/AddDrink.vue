@@ -11,6 +11,7 @@ const producerId = ref(null)
 const previewImage = ref("")
 const name = ref("")
 const description = ref("")
+const testImageUrl = ref("")
 
 // Get producers from supabase
 async function getProducers() {
@@ -38,7 +39,8 @@ async function upload_image() {
         .from('coffee-images')
         .upload(`public/${uuidv4()}.webp`, previewImage.value, {
             cacheControl: '3600',
-            upsert: false
+            upsert: false,
+            contentType: 'image/webp'
         })
 
     if (error) {
@@ -55,6 +57,7 @@ async function uploadDrink() {
         .from('coffee-images')
         .getPublicUrl(imgPath)
     console.log(data.publicUrl)
+    testImageUrl.value = data.publicUrl
     // const { error } = await supabase
     //     .from('drinks')
     //     .insert({
@@ -83,6 +86,7 @@ function uploadImage(e) {
     reader.readAsDataURL(image);
     reader.onload = e => {
         previewImage.value = e.target.result;
+        console.log(previewImage.value)
     };
 }
 
@@ -98,6 +102,7 @@ getProducers()
             </div>
             <div class="flex flex-col md:flex-row justify-start h-full w-full">
                 <div class="p-4 w-full md:w-1/2 ">
+                    <img :src="testImageUrl" />
                     <div>
                         <label class="text-gray-500">Name of the drink</label>
                         <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkName"
