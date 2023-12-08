@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { supabase } from "../config/supabase.ts"
 import router from "../router.js"
 import { inject } from 'vue'
-
+import { decode } from 'base64-arraybuffer'
 const { userId } = inject('userName')
 const errorMessage = ref(null)
 const producers = ref([])
@@ -34,10 +34,13 @@ function uuidv4() {
 }
 
 async function upload_image() {
+    const parts = previewImage.value.split(',')
+    const imageBase64 = parts[parts.length - 1]
+    console.log(imageBase64)
     const { data, error } = await supabase
         .storage
         .from('coffee-images')
-        .upload(`public/${uuidv4()}.webp`, previewImage.value, {
+        .upload(`public/${uuidv4()}.webp`, decode(imageBase64), {
             cacheControl: '3600',
             upsert: false,
             contentType: 'image/webp'
@@ -49,15 +52,24 @@ async function upload_image() {
     }
     return data.path
 }
-// Upload a drink to supabase
-async function uploadDrink() {
-    const imgPath = await upload_image()
-    let { data, error } = supabase
+
+async function get_image_url(imgPath) {
+    const { data, error } = supabase
         .storage
         .from('coffee-images')
         .getPublicUrl(imgPath)
-    console.log(data.publicUrl)
-    testImageUrl.value = data.publicUrl
+
+    if (error) {
+        console.error(error_upload_img)
+        return
+    }
+    return data.publicUrl
+}
+// Upload a drink to supabase
+async function uploadDrink() {
+    const imgPath = await upload_image()
+    const imageUrl = await get_image_url(imgPath)
+    const imageId = await upload_to_image_table(imageUrl)
     // const { error } = await supabase
     //     .from('drinks')
     //     .insert({
@@ -85,8 +97,7 @@ function uploadImage(e) {
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = e => {
-        previewImage.value = e.target.result;
-        console.log(previewImage.value)
+        previewImage.value = e.target.result
     };
 }
 
@@ -102,7 +113,6 @@ getProducers()
             </div>
             <div class="flex flex-col md:flex-row justify-start h-full w-full">
                 <div class="p-4 w-full md:w-1/2 ">
-                    <img :src="testImageUrl" />
                     <div>
                         <label class="text-gray-500">Name of the drink</label>
                         <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4" name="drinkName"
