@@ -47,7 +47,7 @@ async function upload_image() {
         })
 
     if (error) {
-        console.error(error_upload_img)
+        console.error(error)
         return
     }
     return data.path
@@ -60,35 +60,52 @@ async function get_image_url(imgPath) {
         .getPublicUrl(imgPath)
 
     if (error) {
-        console.error(error_upload_img)
+        console.error(error)
         return
     }
     return data.publicUrl
+}
+
+async function upload_to_image_table(imageUrl) {
+    const { data, error } = await supabase
+        .from('images')
+        .insert({
+            url: imageUrl,
+            storage_vendor: "supabase"
+        })
+        .select()
+
+    if (error) {
+        console.error(error)
+        return
+    }
+    return data.id
 }
 // Upload a drink to supabase
 async function uploadDrink() {
     const imgPath = await upload_image()
     const imageUrl = await get_image_url(imgPath)
     const imageId = await upload_to_image_table(imageUrl)
-    // const { error } = await supabase
-    //     .from('drinks')
-    //     .insert({
-    //         name: name.value,
-    //         description: description.value,
-    //         producer: producerId.value,
-    //         user_id: userId.value
-    //     })
+    const { error } = await supabase
+        .from('drinks')
+        .insert({
+            name: name.value,
+            description: description.value,
+            producer: producerId.value,
+            user_id: userId.value,
+            image: imageId
+        })
 
-    // if (error) {
-    //     console.log(error.status)
-    //     if (error.status === 401) {
-    //         errorMessage.value = "You must be logged in to upload a drink"
-    //         return
-    //     }
-    //     errorMessage.value = "There was an error uploading your drink"
-    //     return
-    // }
-    // errorMessage.value = null
+    if (error) {
+        console.log(error.status)
+        if (error.status === 401) {
+            errorMessage.value = "You must be logged in to upload a drink"
+            return
+        }
+        errorMessage.value = "There was an error uploading your drink"
+        return
+    }
+    errorMessage.value = null
     // router.push({ path: '/' })
 }
 
