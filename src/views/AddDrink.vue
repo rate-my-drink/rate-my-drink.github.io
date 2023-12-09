@@ -11,7 +11,6 @@ const producerId = ref(null)
 const previewImage = ref("")
 const name = ref("")
 const description = ref("")
-const testImageUrl = ref("")
 
 // Get producers from supabase
 async function getProducers() {
@@ -104,7 +103,7 @@ async function uploadDrink() {
         return
     }
     errorMessage.value = null
-    // router.push({ path: '/' })
+    router.push({ path: '/' })
 }
 
 function uploadImage(e) {
