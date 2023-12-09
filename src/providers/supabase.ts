@@ -31,7 +31,7 @@ async function signup(email: string, password: string, name: string | undefined 
     }).then(
       (res) => {
         console.log(res)
-      userName.value = name
+        userName.value = name
       }
     )
   }    

@@ -25,7 +25,6 @@ async function uploadReview() {
         })
 
     if (error) {
-        console.log(error.status)
         if (error.status === 401) {
             errorMessage.value = "You must be logged in to upload a review"
             return
