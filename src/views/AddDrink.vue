@@ -20,7 +20,7 @@ async function getProducers() {
         .select('id, name')
 
     if (error) {
-        console.log(error)
+        console.error(error)
         return
     }
     const sorted_producers = data.sort((a, b) => a.name.localeCompare(b.name))
@@ -36,7 +36,6 @@ function uuidv4() {
 async function upload_image() {
     const parts = previewImage.value.split(',')
     const imageBase64 = parts[parts.length - 1]
-    console.log(imageBase64)
     const { data, error } = await supabase
         .storage
         .from('coffee-images')
@@ -79,7 +78,7 @@ async function upload_to_image_table(imageUrl) {
         console.error(error)
         return
     }
-    return data.id
+    return data[0].id
 }
 // Upload a drink to supabase
 async function uploadDrink() {
@@ -97,7 +96,6 @@ async function uploadDrink() {
         })
 
     if (error) {
-        console.log(error.status)
         if (error.status === 401) {
             errorMessage.value = "You must be logged in to upload a drink"
             return
