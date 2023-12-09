@@ -5,7 +5,7 @@ import { RouterLink } from 'vue-router'
 const props = defineProps(['product'])
 const product = ref(props.product);
 
-const url = product.image_url ? product.image_url : "/src/assets/images/placeholder_mug.png"
+const url = product.value.image && product.value.image.url ? product.value.image.url : "/src/assets/images/placeholder_mug.png"
 </script>
 <template>
     <router-link class="bg-white rounded-lg shadow-lg h-96 overflow-hidden text-ellipsis" :to="'/drink/' + product.id">
