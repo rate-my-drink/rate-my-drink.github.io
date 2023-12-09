@@ -6,7 +6,7 @@ const props = defineProps(['product'])
 const product = ref(props.product);
 
 const image = product.value.image
-const imageUrl = image && image.url ? image.url : import.meta.env.BASE_URL + "images/placeholder_mug.png"
+const imageUrl = image && image.url ? image.url : import.meta.env.BASE_URL + "images/placeholder_mug.webp"
 console.log(imageUrl)
 </script>
 <template>
