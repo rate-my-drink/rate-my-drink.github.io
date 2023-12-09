@@ -31,7 +31,7 @@ function getDrinks() {
 function getAllDrinks() {
     supabase
         .from('drinks')
-        .select('id, name, image_url, description')
+        .select('id, name, description, image( url )')
         .order('name', { ascending: true })
         .range(startDrink.value, stopDrink.value)
         .then((res) => {
@@ -65,7 +65,7 @@ function searchDrinks() {
 
     supabase
         .from('drinks')
-        .select('id, name, image_url, description')
+        .select('id, name, description, image( url )')
         .textSearch('fts', searchString)
         .order('name', { ascending: true })
         .range(startDrink.value, stopDrink.value)

@@ -13,7 +13,7 @@ const producer = ref("")
 async function fetchDrink() {
     const { data } = await supabase
         .from('drinks')
-        .select('id, name, image_url, description, producer(name)')
+        .select('id, name, description, producer(name), image( url )')
         .eq('id', drinkId)
         .maybeSingle()
     if (data === null) {
@@ -22,7 +22,7 @@ async function fetchDrink() {
         description.value = ""
         return
     }
-    image_url.value = data.image_url
+    image_url.value = data.image_url ? data.image_url : "/src/assets/images/placeholder_mug.png"
     name.value = data.name
     description.value = data.description
     producer.value = data.producer.name
