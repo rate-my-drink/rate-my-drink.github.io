@@ -9,6 +9,7 @@ const errorMessage = ref(null)
 const producers = ref([])
 const producerId = ref(null)
 const previewImage = ref("")
+const previewImageType = ref("")
 const name = ref("")
 const description = ref("")
 
@@ -34,14 +35,15 @@ function uuidv4() {
 
 async function upload_image() {
     const parts = previewImage.value.split(',')
+    const postFix = previewImageType.value.split('/')[1]
     const imageBase64 = parts[parts.length - 1]
     const { data, error } = await supabase
         .storage
         .from('coffee-images')
-        .upload(`public/${uuidv4()}.webp`, decode(imageBase64), {
+        .upload(`public/${uuidv4()}.${postFix}`, decode(imageBase64), {
             cacheControl: '3600',
             upsert: false,
-            contentType: 'image/webp'
+            contentType: previewImageType.value
         })
 
     if (error) {
@@ -111,6 +113,7 @@ function uploadImage(e) {
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = e => {
+        previewImageType.value = image.type
         previewImage.value = e.target.result
     };
 }
@@ -149,8 +152,8 @@ getProducers()
                 </div>
 
                 <label class="md:w-1/2 h-full p-2 outline m-2 outline-gray-400 rounded-xl">
-                    <!--TODO add image/jpeg, image/png, image/jpg, -->
-                    <input type="file" class="hidden" accept="image/webp" @change=uploadImage>
+                    <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg, image/webp"
+                        @change=uploadImage>
                     <span v-show="!previewImage">
                         Upload a image
                     </span>
