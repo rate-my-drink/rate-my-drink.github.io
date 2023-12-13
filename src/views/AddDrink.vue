@@ -3,12 +3,14 @@ import { ref } from 'vue'
 import { supabase } from "../config/supabase.ts"
 import router from "../router.js"
 import { inject } from 'vue'
-import { decode } from 'base64-arraybuffer'
+import { upload_image } from "../helpers/supabase/upload_image.ts"
+
 const { userId } = inject('userName')
 const errorMessage = ref(null)
 const producers = ref([])
 const producerId = ref(null)
 const previewImage = ref("")
+const previewImageType = ref("")
 const name = ref("")
 const description = ref("")
 
@@ -26,64 +28,9 @@ async function getProducers() {
     producers.value = sorted_producers
 }
 
-function uuidv4() {
-    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
-}
-
-async function upload_image() {
-    const parts = previewImage.value.split(',')
-    const imageBase64 = parts[parts.length - 1]
-    const { data, error } = await supabase
-        .storage
-        .from('coffee-images')
-        .upload(`public/${uuidv4()}.webp`, decode(imageBase64), {
-            cacheControl: '3600',
-            upsert: false,
-            contentType: 'image/webp'
-        })
-
-    if (error) {
-        console.error(error)
-        return
-    }
-    return data.path
-}
-
-async function get_image_url(imgPath) {
-    const { data, error } = supabase
-        .storage
-        .from('coffee-images')
-        .getPublicUrl(imgPath)
-
-    if (error) {
-        console.error(error)
-        return
-    }
-    return data.publicUrl
-}
-
-async function upload_to_image_table(imageUrl) {
-    const { data, error } = await supabase
-        .from('images')
-        .insert({
-            url: imageUrl,
-            storage_vendor: "supabase"
-        })
-        .select()
-
-    if (error) {
-        console.error(error)
-        return
-    }
-    return data[0].id
-}
 // Upload a drink to supabase
 async function uploadDrink() {
-    const imgPath = await upload_image()
-    const imageUrl = await get_image_url(imgPath)
-    const imageId = await upload_to_image_table(imageUrl)
+    const imageId = await upload_image(previewImage.value)
     const { error } = await supabase
         .from('drinks')
         .insert({
@@ -111,6 +58,7 @@ function uploadImage(e) {
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = e => {
+        previewImageType.value = image.type
         previewImage.value = e.target.result
     };
 }
@@ -149,8 +97,8 @@ getProducers()
                 </div>
 
                 <label class="md:w-1/2 h-full p-2 outline m-2 outline-gray-400 rounded-xl">
-                    <!--TODO add image/jpeg, image/png, image/jpg, -->
-                    <input type="file" class="hidden" accept="image/webp" @change=uploadImage>
+                    <input type="file" class="hidden" accept="image/jpeg, image/png, image/jpg, image/webp"
+                        @change=uploadImage>
                     <span v-show="!previewImage">
                         Upload a image
                     </span>

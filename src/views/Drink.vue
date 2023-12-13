@@ -22,7 +22,7 @@ async function fetchDrink() {
         description.value = ""
         return
     }
-    image_url.value = data.image && data.image.url ? data.image.url : import.meta.env.BASE_URL + "images/placeholder_mug.png"
+    image_url.value = data.image && data.image.url ? data.image.url : import.meta.env.BASE_URL + "images/placeholder_mug.webp"
     name.value = data.name
     description.value = data.description
     producer.value = data.producer.name

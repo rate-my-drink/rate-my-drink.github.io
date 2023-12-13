@@ -6,8 +6,8 @@ const props = defineProps(['product'])
 const product = ref(props.product);
 
 const image = product.value.image
-const imageUrl = image && image.url ? image.url : import.meta.env.BASE_URL + "images/placeholder_mug.png"
-console.log(imageUrl)
+const imageUrl = image && image.url ? image.url : import.meta.env.BASE_URL + "images/placeholder_mug.webp"
+
 </script>
 <template>
     <router-link class="bg-white rounded-lg shadow-lg h-96 overflow-hidden text-ellipsis" :to="'/drink/' + product.id">
