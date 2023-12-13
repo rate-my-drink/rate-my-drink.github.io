@@ -11,15 +11,16 @@ export async function upload_image(previewImage: string): Promise<string> {
 
 async function upload_image_data(previewImage: string): Promise<string> {
     const parts = previewImage.split(',')
-    console.log(parts[0])
+    const contentType = parts[0].split(":")[1].split(";")[0];
+    const postfix = contentType.split("/")[1]
     const imageBase64 = parts[parts.length - 1]
     const { data, error } = await supabase
         .storage
         .from('coffee-images')
-        .upload(`public/${generate_uuidv4()}.webp`, decode(imageBase64), {
+        .upload(`public/${generate_uuidv4()}.${postfix}`, decode(imageBase64), {
             cacheControl: '3600',
             upsert: false,
-            contentType: 'image/webp'
+            contentType
         })
 
     if (error) {
