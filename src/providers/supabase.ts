@@ -17,7 +17,6 @@ async function signup(email: string, password: string, name: string | undefined 
       password
   })
   .then((res) => {
-    console.log(res)
     const newId = res.data.user.id
     if(newId){
       userId.value = newId
@@ -30,7 +29,6 @@ async function signup(email: string, password: string, name: string | undefined 
       name
     }).then(
       (res) => {
-        console.log(res)
         userName.value = name
       }
     )
