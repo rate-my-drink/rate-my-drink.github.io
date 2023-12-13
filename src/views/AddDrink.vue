@@ -30,7 +30,20 @@ async function getProducers() {
 
 // Upload a drink to supabase
 async function uploadDrink() {
-    const imageId = await upload_image(previewImage.value)
+    if (!name.value) {
+        errorMessage.value = "The Drink most have a name"
+        return
+    }
+    if (!producerId.value) {
+        errorMessage.value = "The Drink most have a producer"
+        return
+    }
+    const folderName = `drinks/${producerId.value}`
+
+    let imageId = null
+    if (previewImage.value) {
+        imageId = await upload_image(previewImage.value, folderName)
+    }
     const { error } = await supabase
         .from('drinks')
         .insert({
