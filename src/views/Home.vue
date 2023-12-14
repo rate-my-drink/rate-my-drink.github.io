@@ -28,6 +28,12 @@ function getDrinks() {
     }
 }
 
+function updateTotalDrinks(newTotal) {
+    totalNumDrinks.value = newTotal
+    if (currentPage.value >= maxPageNum.value) {
+        currentPage.value = maxPageNum.value
+    }
+}
 function getAllDrinks() {
     supabase
         .from('drinks')
@@ -48,7 +54,7 @@ function getAllDrinks() {
         .from('drinks')
         .select('*', { count: 'exact', head: true })
         .then((res) => {
-            totalNumDrinks.value = res.count
+            updateTotalDrinks(res.count)
         }
         )
 }
@@ -84,7 +90,7 @@ function searchDrinks() {
         .select('*', { count: 'exact', head: true })
         .textSearch('fts', searchString)
         .then((res) => {
-            totalNumDrinks.value = res.count
+            updateTotalDrinks(res.count)
         }
         )
 }
@@ -121,22 +127,40 @@ getDrinks()
                 <input type="text" v-model="searchTerm" class="border border-gray-400 w-3/5 rounded py-2 px-4"
                     placeholder="Search drinks..." @input="getDrinks()">
             </div>
-            <div v-if="isLoading">
-                loading
-            </div>
-            <div v-else class="flex justify-between">
-                <button class="bg-red-400 p-2 px-4 rounded-l-full m-2" @click="previousPage()">
-                    Previous page
-                </button>
+            <div class="flex justify-between">
+                <div>
+                    <button v-show="currentPage != 0" class="p-2 px-4 rounded-l-full m-2 flex items-center"
+                        @click="previousPage()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M10.707 3.293a1 1 0 010 1.414L6.414 9H17a1 1 0 110 2H6.414l4.293 4.293a1 1 0 11-1.414 1.414l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Previous page
+                    </button>
+                </div>
                 <span>
                     {{ currentPage + 1 }} of {{ maxPageNum + 1 }}
                 </span>
-                <button class="bg-red-400 p-2 px-4 rounded-r-full m-2" @click="nextPage()">
-                    Next page
-                </button>
+                <div>
+                    <button v-show="currentPage < maxPageNum" class="p-2 px-4 rounded-r-full m-2 flex items-center"
+                        @click="nextPage()">
+                        Next page
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M9.293 16.707a1 1 0 010-1.414L13.586 11H3a1 1 0 110-2h10.586l-4.293-4.293a1 1 0 111.414-1.414l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div class=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <DrinkCard v-for="drink in drinks" :product="drink" :key="drink.id" />
+                <div v-if="isLoading">
+                    loading
+                </div>
+                <DrinkCard v-else v-for="drink in drinks" :product="drink" :key="drink.id" />
             </div>
         </div>
     </div>
