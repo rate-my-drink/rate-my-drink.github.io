@@ -2,10 +2,10 @@ import { supabase } from "../../config/supabase.ts"
 import { decode } from 'base64-arraybuffer'
 import { generate_uuidv4 } from "../general/uuid.ts"
 
-export async function upload_image(previewImage: string, folderName: string = ""): Promise<string> {
+export async function upload_image(previewImage: string, userId: string, folderName: string = ""): Promise<string> {
     const imgPath = await upload_image_data(previewImage, folderName)
     const imageUrl = await get_image_url(imgPath)
-    const imageId = await upload_to_image_table(imageUrl)
+    const imageId = await upload_to_image_table(imageUrl, userId)
     return imageId
 }
 
@@ -48,12 +48,13 @@ async function get_image_url(imgPath: string): Promise<string> {
     return data.publicUrl
 }
 
-async function upload_to_image_table(imageUrl: string): Promise<string> {
+async function upload_to_image_table(imageUrl: string, userId: string): Promise<string> {
     const { data, error } = await supabase
         .from('images')
         .insert({
             url: imageUrl,
-            storage_vendor: "supabase"
+            storage_vendor: "supabase",
+            user: userId
         })
         .select()
 

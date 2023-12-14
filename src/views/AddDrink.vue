@@ -42,7 +42,7 @@ async function uploadDrink() {
 
     let imageId = null
     if (previewImage.value) {
-        imageId = await upload_image(previewImage.value, folderName)
+        imageId = await upload_image(previewImage.value, userId.value, folderName)
     }
     const { error } = await supabase
         .from('drinks')
