@@ -127,8 +127,8 @@ getDrinks()
                 <input type="text" v-model="searchTerm" class="border border-gray-400 w-3/5 rounded py-2 px-4"
                     placeholder="Search drinks..." @input="getDrinks()">
             </div>
-            <div class="flex justify-between">
-                <div>
+            <div class="grid grid-cols-3 gap-4 w-full">
+                <div class="flex justify-start">
                     <button v-show="currentPage != 0" class="p-2 px-4 rounded-l-full m-2 flex items-center"
                         @click="previousPage()">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
@@ -140,10 +140,10 @@ getDrinks()
                         Previous page
                     </button>
                 </div>
-                <span>
+                <span class="flex justify-center">
                     {{ currentPage + 1 }} of {{ maxPageNum + 1 }}
                 </span>
-                <div>
+                <div class="flex justify-end">
                     <button v-show="currentPage < maxPageNum" class="p-2 px-4 rounded-r-full m-2 flex items-center"
                         @click="nextPage()">
                         Next page
