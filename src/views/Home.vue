@@ -113,9 +113,9 @@ getDrinks()
         </div>
     </div>
     <div class="w-full flex justify-center h-full">
-        <div class="w-full flex flex-col justify-center lg:w-2/3 bg-slate-200 h-full p-2 px-6">
-            <div class="flex justify-center w-full">
-                <router-link class="text-2xl font-bold w-4/5 button m-4" to="/add-drink">Add Drink</router-link>
+        <div class="relative w-full flex flex-col justify-center lg:w-2/3 bg-slate-200 h-full p-2 px-6">
+            <div class="fixed bottom-10 w-fit">
+                <router-link class="text-5xl font-bold rounded-full p-4 button m-4" to="/add-drink">+</router-link>
             </div>
             <div class="flex justify-center w-full">
                 <input type="text" v-model="searchTerm" class="border border-gray-400 w-3/5 rounded py-2 px-4"
