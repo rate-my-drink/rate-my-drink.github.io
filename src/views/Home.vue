@@ -1,8 +1,9 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { supabase } from "@/config/supabase.ts"
-import DrinkCard from "@/components/DrinkCard.vue"
+import DrinkCard from "@/components/cards/DrinkCard.vue"
 import { RouterLink } from 'vue-router'
+import Loadingcard from '../components/cards/Loadingcard.vue';
 
 const drinks = ref([])
 const numbPerPage = ref(15)
@@ -16,7 +17,6 @@ const isLoading = ref(true)
 const maxPageNum = computed(() => Math.max(0, Math.ceil(totalNumDrinks.value / numbPerPage.value) - 1))
 const startDrink = computed(() => currentPage.value * numbPerPage.value)
 const stopDrink = computed(() => (currentPage.value + 1) * numbPerPage.value - 1)
-// Get the total number of drinks in the database
 
 
 function getDrinks() {
@@ -157,9 +157,7 @@ getDrinks()
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <div v-if="isLoading">
-                    loading
-                </div>
+                <Loadingcard v-if="isLoading" v-for="num in numbPerPage" :key="num" />
                 <DrinkCard v-else v-for="drink in drinks" :product="drink" :key="drink.id" />
             </div>
         </div>

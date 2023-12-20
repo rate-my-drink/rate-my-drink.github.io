@@ -4,15 +4,15 @@
 
 @layer base {
     h1 {
-      @apply p-4 text-2xl font-bold md:text-4xl;
+      @apply py-4 text-2xl font-bold md:text-4xl;
     }
   
     h2 {
-      @apply p-4 text-xl font-bold md:text-3xl;
+      @apply py-4 text-xl font-bold md:text-3xl;
     }
   
     h3 {
-      @apply p-4 text-lg font-bold md:text-2xl;
+      @apply py-4 text-lg font-bold md:text-2xl;
     }
   
     h4 {
@@ -27,5 +27,20 @@
 @layer components {
   .button {
     @apply w-full text-center py-3 m-1 rounded-xl text-black bg-amber-700 hover:bg-amber-500 focus:outline-none;
+  }
+  .card {
+    @apply bg-white rounded-lg shadow-lg h-96 overflow-hidden text-ellipsis;
+  }
+  .card-image {
+    @apply rounded-t-lg w-full h-48 object-cover;
+  }
+  .card-body {
+    @apply p-4 h-full;
+  }
+  .card-title {
+    @apply text-xl font-semibold mb-2;
+  }
+  .card-description {
+    @apply text-sm text-gray-500;
   }
 }
