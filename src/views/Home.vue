@@ -17,7 +17,6 @@ const isLoading = ref(true)
 const maxPageNum = computed(() => Math.max(0, Math.ceil(totalNumDrinks.value / numbPerPage.value) - 1))
 const startDrink = computed(() => currentPage.value * numbPerPage.value)
 const stopDrink = computed(() => (currentPage.value + 1) * numbPerPage.value - 1)
-// Get the total number of drinks in the database
 
 
 function getDrinks() {
