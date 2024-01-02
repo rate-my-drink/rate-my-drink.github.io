@@ -4,7 +4,7 @@ import { supabase } from "@/config/supabase.ts"
 import DrinkCard from "@/components/cards/DrinkCard.vue"
 import { RouterLink } from 'vue-router'
 import Loadingcard from '../components/cards/Loadingcard.vue';
-
+import arrow from '../components/arrow.vue';
 const drinks = ref([])
 const numbPerPage = ref(15)
 const currentPage = ref(0)
@@ -131,34 +131,47 @@ getDrinks()
                 <div class="flex justify-start">
                     <button v-show="currentPage != 0" class="p-2 px-4 rounded-l-full m-2 flex items-center"
                         @click="previousPage()">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M10.707 3.293a1 1 0 010 1.414L6.414 9H17a1 1 0 110 2H6.414l4.293 4.293a1 1 0 11-1.414 1.414l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        <arrow class="rotate-180" />
                         Previous page
                     </button>
                 </div>
                 <span class="flex justify-center">
-                    {{ currentPage + 1 }} of {{ maxPageNum + 1 }}
+                    <span class="flex flex-col justify-center">
+                        {{ currentPage + 1 }} of {{ maxPageNum + 1 }}
+                    </span>
                 </span>
                 <div class="flex justify-end">
                     <button v-show="currentPage < maxPageNum" class="p-2 px-4 rounded-r-full m-2 flex items-center"
                         @click="nextPage()">
                         Next page
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M9.293 16.707a1 1 0 010-1.414L13.586 11H3a1 1 0 110-2h10.586l-4.293-4.293a1 1 0 111.414-1.414l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        <arrow />
                     </button>
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <Loadingcard v-if="isLoading" v-for="num in numbPerPage" :key="num" />
                 <DrinkCard v-else v-for="drink in drinks" :product="drink" :key="drink.id" />
+            </div>
+            <div class="grid grid-cols-3 gap-4 w-full">
+                <div class="flex justify-start">
+                    <button v-show="currentPage != 0" class="p-2 px-4 rounded-l-full m-2 flex items-center"
+                        @click="previousPage()">
+                        <arrow class="rotate-180" />
+                        Previous page
+                    </button>
+                </div>
+                <span class="flex justify-center">
+                    <span class="flex flex-col justify-center">
+                        {{ currentPage + 1 }} of {{ maxPageNum + 1 }}
+                    </span>
+                </span>
+                <div class="flex justify-end">
+                    <button v-show="currentPage < maxPageNum" class="p-2 px-4 rounded-r-full m-2 flex items-center"
+                        @click="nextPage()">
+                        Next page
+                        <arrow />
+                    </button>
+                </div>
             </div>
         </div>
     </div>
