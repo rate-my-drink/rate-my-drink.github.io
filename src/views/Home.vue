@@ -6,7 +6,7 @@ import { RouterLink } from 'vue-router'
 import Loadingcard from '../components/cards/Loadingcard.vue';
 import arrow from '../components/arrow.vue';
 const drinks = ref([])
-const numbPerPage = ref(15)
+const numbPerPage = ref(24)
 const currentPage = ref(0)
 const totalNumDrinks = ref(0)
 const searchTerm = ref('')
@@ -119,7 +119,7 @@ getDrinks()
         </div>
     </div>
     <div class="w-full flex justify-center h-full">
-        <div class="w-full flex flex-col justify-center lg:w-2/3 bg-slate-200 h-full p-2 px-6">
+        <div class="w-full flex flex-col justify-center xl:w-4/5 bg-slate-200 h-full p-2 px-6">
             <div class="flex justify-center w-full">
                 <router-link class="text-2xl font-bold w-4/5 button m-4" to="/add-drink">Add Drink</router-link>
             </div>
@@ -148,7 +148,7 @@ getDrinks()
                     </button>
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                 <Loadingcard v-if="isLoading" v-for="num in numbPerPage" :key="num" />
                 <DrinkCard v-else v-for="drink in drinks" :product="drink" :key="drink.id" />
             </div>
