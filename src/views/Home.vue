@@ -14,6 +14,7 @@ const totalNumDrinks = ref(0)
 const searchTerm = ref('')
 const isLoading = ref(true)
 const showFilters = ref(false)
+const allProducers = ref([])
 // Get the maximum page number for the current number of drinks
 // This is based on array counting so the max page number is 1 less than the actual number of pages
 // Because the first page is page 0
@@ -60,6 +61,21 @@ function getAllDrinks() {
             updateTotalDrinks(res.count)
         }
         )
+}
+
+function getAllProducers() {
+    supabase
+        .from('producers')
+        .select('id, name')
+        .order('name', { ascending: true })
+        .then((res) => {
+            const data = res.data
+            if (data === null) {
+                allProducers.value = []
+                return
+            }
+            allProducers.value = data
+        })
 }
 
 function searchDrinks() {
@@ -110,11 +126,13 @@ function previousPage() {
     getDrinks()
 }
 
-getDrinks()
 function toggleShowFilters() {
     showFilters.value = !showFilters.value
     console.log(showFilters.value)
 }
+getDrinks()
+getAllProducers()
+
 </script>
 
 <template>
@@ -136,11 +154,20 @@ function toggleShowFilters() {
                     <funnel class="w-10 h-10 ml-2 hover:cursor-pointer" @click="toggleShowFilters()" />
                 </div>
             </div>
-            <div class="bg-slate-400 rounded-lg p-4 transform ease-in-out duration-500 my-2" :class="showFilters
-                ? 'translate-y-0 scale-y-full h-12'
+            <div class="bg-slate-400 rounded-lg transform ease-in-out duration-500 my-2" :class="showFilters
+                ? 'translate-y-0 scale-y-full h-fit p-4 '
                 : '-translate-y-full scale-y-0 h-0'
                 ">
-                hello world
+
+                <h2 v-show="showFilters">Producers</h2>
+                <div v-show="showFilters" class="grid grid-cols-4 gap-4">
+                    <div v-for="producer  in allProducers" :key="producer.id">
+                        <label>
+                            <input type="checkbox" id="producer.id" />
+                            {{ producer.name }}
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="grid grid-cols-3 gap-4 w-full">
                 <div class="flex justify-start">
