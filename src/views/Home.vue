@@ -4,13 +4,16 @@ import { supabase } from "@/config/supabase.ts"
 import DrinkCard from "@/components/cards/DrinkCard.vue"
 import { RouterLink } from 'vue-router'
 import Loadingcard from '../components/cards/Loadingcard.vue';
-import arrow from '../components/arrow.vue';
+import arrow from '../components/svgs/Arrow.vue';
+import funnel from '../components/svgs/Funnel.vue'
+
 const drinks = ref([])
 const numbPerPage = ref(24)
 const currentPage = ref(0)
 const totalNumDrinks = ref(0)
 const searchTerm = ref('')
 const isLoading = ref(true)
+const showFilters = ref(false)
 // Get the maximum page number for the current number of drinks
 // This is based on array counting so the max page number is 1 less than the actual number of pages
 // Because the first page is page 0
@@ -108,7 +111,10 @@ function previousPage() {
 }
 
 getDrinks()
-
+function toggleShowFilters() {
+    showFilters.value = !showFilters.value
+    console.log(showFilters.value)
+}
 </script>
 
 <template>
@@ -124,8 +130,17 @@ getDrinks()
                 <router-link class="text-2xl font-bold w-4/5 button m-4" to="/add-drink">Add Drink</router-link>
             </div>
             <div class="flex justify-center w-full">
-                <input type="text" v-model="searchTerm" class="border border-gray-400 w-3/5 rounded py-2 px-4"
-                    placeholder="Search drinks..." @input="getDrinks()">
+                <div class="w-4/5 flex justify-center">
+                    <input type="text" v-model="searchTerm" class="border border-gray-400 w-5/6 rounded py-2 px-4"
+                        placeholder="Search drinks..." @input="getDrinks()">
+                    <funnel class="w-10 h-10 ml-2 hover:cursor-pointer" @click="toggleShowFilters()" />
+                </div>
+            </div>
+            <div class="bg-slate-400 rounded-lg p-4 transform ease-in-out duration-500 my-2" :class="showFilters
+                ? 'translate-y-0 scale-y-full h-12'
+                : '-translate-y-full scale-y-0 h-0'
+                ">
+                hello world
             </div>
             <div class="grid grid-cols-3 gap-4 w-full">
                 <div class="flex justify-start">
