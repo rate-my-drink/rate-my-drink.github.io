@@ -25,6 +25,7 @@ const stopDrink = computed(() => (currentPage.value + 1) * numbPerPage.value - 1
 
 function getDrinks() {
     isLoading.value = true
+
     if (searchTerm.value === '') {
         getAllDrinks()
     } else {
@@ -38,29 +39,39 @@ function updateTotalDrinks(newTotal) {
         currentPage.value = maxPageNum.value
     }
 }
-function getAllDrinks() {
-    supabase
-        .from('drinks')
-        .select('id, name, description, image( url )')
-        .order('name', { ascending: true })
-        .range(startDrink.value, stopDrink.value)
-        .then((res) => {
-            const data = res.data
-            if (data === null) {
-                drinks.value = []
-                return
-            }
-            drinks.value = data
-            isLoading.value = false
-        })
+async function getAllDrinks() {
+    let producerIds = allProducers.value.filter((i) => i.isSelected).map((i) => i.id)
 
-    supabase
+    console.log(producerIds)
+    let chainPage = supabase
+        .from('drinks')
+        .select('id, name, description, producer, image( url )')
+        .order('name', { ascending: true })
+    let chainTotalDrinks = supabase
         .from('drinks')
         .select('*', { count: 'exact', head: true })
-        .then((res) => {
-            updateTotalDrinks(res.count)
+
+    if (producerIds.length > 0) {
+        chainPage = chainPage.in('producer', producerIds)
+        chainTotalDrinks = chainTotalDrinks.in('producer', producerIds)
+    }
+
+    await chainTotalDrinks.then((res) => {
+        updateTotalDrinks(res.count)
+    }
+    )
+    chainPage = chainPage.range(startDrink.value, stopDrink.value)
+
+    chainPage.then((res) => {
+        const data = res.data
+        if (data === null) {
+            drinks.value = []
+            return
         }
-        )
+        drinks.value = data
+        isLoading.value = false
+    })
+
 }
 
 function getAllProducers() {
@@ -74,7 +85,7 @@ function getAllProducers() {
                 allProducers.value = []
                 return
             }
-            allProducers.value = data
+            allProducers.value = data.map((i) => ({ ...i, isSelected: false }))
         })
 }
 
@@ -130,8 +141,8 @@ function toggleShowFilters() {
     showFilters.value = !showFilters.value
     console.log(showFilters.value)
 }
-getDrinks()
 getAllProducers()
+getDrinks()
 
 </script>
 
@@ -151,7 +162,7 @@ getAllProducers()
                 <div class="w-4/5 flex justify-center">
                     <input type="text" v-model="searchTerm" class="border border-gray-400 w-5/6 rounded py-2 px-4"
                         placeholder="Search drinks..." @input="getDrinks()">
-                    <funnel class="w-10 h-10 ml-2 hover:cursor-pointer" @click="toggleShowFilters()" />
+                    <funnel class="w-11 h-11 ml-2 hover:cursor-pointer" @click="toggleShowFilters()" />
                 </div>
             </div>
             <div class="bg-slate-400 rounded-lg transform ease-in-out duration-500 my-2" :class="showFilters
@@ -163,7 +174,7 @@ getAllProducers()
                 <div v-show="showFilters" class="grid grid-cols-4 gap-4">
                     <div v-for="producer  in allProducers" :key="producer.id">
                         <label>
-                            <input type="checkbox" id="producer.id" />
+                            <input type="checkbox" id="producer.id" v-model="producer.isSelected" @change="getDrinks()" />
                             {{ producer.name }}
                         </label>
                     </div>
