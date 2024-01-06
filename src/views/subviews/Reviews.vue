@@ -10,7 +10,7 @@ const props = defineProps({
 });
 const { drinkId } = toRefs(props);
 const reviewText = ref("")
-const reviewRating = ref(2)
+const reviewRating = ref(5)
 const errorMessage = ref(null)
 const allReviews = ref([])
 
@@ -19,7 +19,7 @@ async function uploadReview() {
         .from('drink_reviews')
         .insert({
             message: reviewText.value,
-            score: reviewRating.value,
+            score: reviewRating.value * 10,
             drink_id: drinkId.value,
             user_id: userId.value
         })
@@ -65,7 +65,7 @@ supabase
     <div class="flex justify-center w-full">
         <div class="flex flex-col justify-center w-3/4">
             <textarea class="m-2 p-2 bg-amber-100" type="text" v-model="reviewText"></textarea>
-            <input class="m-2 p-2 bg-amber-100" type="number" max="5" min="0" v-model.number="reviewRating" />
+            <input class="m-2 p-2 bg-amber-100" type="number" max="10" min="1" step="1" v-model.number="reviewRating" />
             <button class="button" @click="uploadReview">Add review</button>
         </div>
     </div>
