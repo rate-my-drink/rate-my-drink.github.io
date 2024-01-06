@@ -23,23 +23,14 @@ const startDrink = computed(() => currentPage.value * numbPerPage.value)
 const stopDrink = computed(() => (currentPage.value + 1) * numbPerPage.value - 1)
 
 
-function getDrinks() {
-    isLoading.value = true
-
-    if (searchTerm.value === '') {
-        getAllDrinks()
-    } else {
-        searchDrinks()
-    }
-}
-
 function updateTotalDrinks(newTotal) {
     totalNumDrinks.value = newTotal
     if (currentPage.value >= maxPageNum.value) {
         currentPage.value = maxPageNum.value
     }
 }
-async function getAllDrinks() {
+async function getDrinks() {
+    isLoading.value = true
     let producerIds = allProducers.value.filter((i) => i.isSelected).map((i) => i.id)
 
     console.log(producerIds)
@@ -56,10 +47,26 @@ async function getAllDrinks() {
         chainTotalDrinks = chainTotalDrinks.in('producer', producerIds)
     }
 
+
+    if (searchTerm.value !== '') {
+        // Split the string on spaces
+        const allWords = searchTerm.value.split(" ").filter(word => word !== "");
+
+        // Add ":*" to each split element using map
+        const allFuzzyWords = allWords.map(word => word + ":*");
+
+        // Join the modified elements back together using join with a space separator
+        const searchString = allFuzzyWords.join(" & ");
+
+        chainPage = chainPage.textSearch('fts', searchString)
+        chainTotalDrinks = chainTotalDrinks.textSearch('fts', searchString)
+    }
+
     await chainTotalDrinks.then((res) => {
         updateTotalDrinks(res.count)
     }
     )
+
     chainPage = chainPage.range(startDrink.value, stopDrink.value)
 
     chainPage.then((res) => {
@@ -89,41 +96,6 @@ function getAllProducers() {
         })
 }
 
-function searchDrinks() {
-    // Split the string on spaces
-    const allWords = searchTerm.value.split(" ").filter(word => word !== "");
-
-    // Add ":*" to each split element using map
-    const allFuzzyWords = allWords.map(word => word + ":*");
-
-    // Join the modified elements back together using join with a space separator
-    const searchString = allFuzzyWords.join(" & ");
-
-    supabase
-        .from('drinks')
-        .select('id, name, description, image( url )')
-        .textSearch('fts', searchString)
-        .order('name', { ascending: true })
-        .range(startDrink.value, stopDrink.value)
-        .then((res) => {
-            const data = res.data
-            if (data === null) {
-                drinks.value = []
-                return
-            }
-            drinks.value = data
-            isLoading.value = false
-        })
-
-    supabase
-        .from('drinks')
-        .select('*', { count: 'exact', head: true })
-        .textSearch('fts', searchString)
-        .then((res) => {
-            updateTotalDrinks(res.count)
-        }
-        )
-}
 
 function nextPage() {
     if (currentPage.value >= maxPageNum.value) return
@@ -162,16 +134,16 @@ getDrinks()
                 <div class="w-4/5 flex justify-center">
                     <input type="text" v-model="searchTerm" class="border border-gray-400 w-5/6 rounded py-2 px-4"
                         placeholder="Search drinks..." @input="getDrinks()">
-                    <funnel class="w-11 h-11 ml-2 hover:cursor-pointer" @click="toggleShowFilters()" />
+                    <funnel class="w-12 h-12 ml-2 hover:cursor-pointer" @click="toggleShowFilters()" />
                 </div>
             </div>
-            <div class="bg-slate-400 rounded-lg transform ease-in-out duration-500 my-2" :class="showFilters
-                ? 'translate-y-0 scale-y-full h-fit p-4 '
-                : '-translate-y-full scale-y-0 h-0'
+            <div class="bg-slate-400 rounded-lg transform ease-in-out duration-1000 my-2 origin-bottom" :class="showFilters
+                ? 'translate-y-0 h-fit p-4'
+                : '-translate-y-full scale-y-0 h-0 overflow-clip'
                 ">
 
-                <h2 v-show="showFilters">Producers</h2>
-                <div v-show="showFilters" class="grid grid-cols-4 gap-4">
+                <h2>Producers</h2>
+                <div class="grid grid-cols-4 gap-4">
                     <div v-for="producer  in allProducers" :key="producer.id">
                         <label>
                             <input type="checkbox" id="producer.id" v-model="producer.isSelected" @change="getDrinks()" />
