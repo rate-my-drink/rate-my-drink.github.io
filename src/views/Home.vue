@@ -137,18 +137,34 @@ getDrinks()
                     <funnel class="w-12 h-12 ml-2 hover:cursor-pointer" @click="toggleShowFilters()" />
                 </div>
             </div>
-            <div class="bg-slate-400 rounded-lg transform ease-in-out duration-1000 my-2 origin-bottom" :class="showFilters
-                ? 'translate-y-0 h-fit p-4'
-                : '-translate-y-full scale-y-0 h-0 overflow-clip'
-                ">
+            <div v-if="showFilters" class="h-screen w-screen fixed bg-transparent z-0 top-0 left-0 right-0"
+                @click="showFilters = false">
+            </div>
+            <div class="h-0 z-10">
+                <div class="bg-slate-400 rounded-lg transform ease-in-out duration-500 my-2 origin-bottom static" :class="showFilters
+                    ? 'translate-y-0 p-4'
+                    : '-translate-y-full scale-y-0'
+                    ">
+                    <!-- Close button -->
+                    <div class="flex justify-end">
+                        <div @click="showFilters = false">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 18.75 7.5-7.5 7.5 7.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 7.5-7.5 7.5 7.5" />
+                            </svg>
+                        </div>
+                    </div>
 
-                <h2>Producers</h2>
-                <div class="grid grid-cols-4 gap-4">
-                    <div v-for="producer  in allProducers" :key="producer.id">
-                        <label>
-                            <input type="checkbox" id="producer.id" v-model="producer.isSelected" @change="getDrinks()" />
-                            {{ producer.name }}
-                        </label>
+                    <h2>Producers</h2>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div v-for="producer  in allProducers" :key="producer.id">
+                            <label>
+                                <input type="checkbox" id="producer.id" v-model="producer.isSelected"
+                                    @change="getDrinks()" />
+                                {{ producer.name }}
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
