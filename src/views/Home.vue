@@ -33,7 +33,6 @@ async function getDrinks() {
     isLoading.value = true
     let producerIds = allProducers.value.filter((i) => i.isSelected).map((i) => i.id)
 
-    console.log(producerIds)
     let chainPage = supabase
         .from('drinks')
         .select('id, name, description, producer, image( url )')
