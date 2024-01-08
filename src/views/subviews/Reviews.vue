@@ -2,6 +2,8 @@
 import { toRefs, ref } from "vue";
 import { supabase } from "../../config/supabase.ts"
 import { inject } from 'vue'
+import StarRating from 'vue-star-rating'
+import Plus from "../../components/svgs/Plus.vue";
 
 const { userId } = inject('userName')
 
@@ -13,7 +15,7 @@ const reviewText = ref("")
 const reviewRating = ref(5)
 const errorMessage = ref(null)
 const allReviews = ref([])
-
+const rating = ref(0)
 async function uploadReview() {
     const { error } = await supabase
         .from('drink_reviews')
@@ -65,7 +67,13 @@ supabase
     <div class="flex justify-center w-full">
         <div class="flex flex-col justify-center w-3/4">
             <textarea class="m-2 p-2 bg-amber-100" type="text" v-model="reviewText"></textarea>
-            <input class="m-2 p-2 bg-amber-100" type="number" max="10" min="1" step="1" v-model.number="reviewRating" />
+            <span>{{ reviewRating }}</span>
+            <div class="flex">
+
+                <star-rating v-model:rating="reviewRating" :increment="1" :max-rating="7" :animate="true"
+                    :show-rating="false"></star-rating>
+                <Plus />
+            </div>
             <button class="button" @click="uploadReview">Add review</button>
         </div>
     </div>
