@@ -1,5 +1,5 @@
 <script setup>
-import { toRefs, ref } from "vue";
+import { toRefs, ref, computed } from "vue";
 import { supabase } from "../../config/supabase.ts"
 import { inject } from 'vue'
 import StarRating from 'vue-star-rating'
@@ -16,15 +16,23 @@ const reviewText = ref("")
 const reviewRating = ref(5)
 const errorMessage = ref(null)
 const allReviews = ref([])
-const maxRating = ref(7)
-const incrementSizeRating = ref(1)
+const maxRating = ref(5)
+const incrementSizeRating = ref(0.5)
+
+const databaseRating = computed(() => {
+    if (allReviews.value.length === 0) {
+        return 0;
+    }
+    return Math.round(reviewRating.value * 240 / maxRating.value);
+});
+
 
 async function uploadReview() {
     const { error } = await supabase
         .from('drink_reviews')
         .insert({
             message: reviewText.value,
-            score: reviewRating.value * 10,
+            score: databaseRating,
             drink_id: drinkId.value,
             user_id: userId.value
         })
@@ -86,7 +94,6 @@ function decreaseRating() {
     <div class="flex justify-center w-full">
         <div class="flex flex-col justify-center w-3/4">
             <textarea class="m-2 p-2 bg-amber-100" type="text" v-model="reviewText"></textarea>
-            <span>{{ reviewRating }}</span>
             <div class="flex justify-center">
                 <div class="h-full flex flex-col justify-center">
                     <Minus class="h-8" @click="decreaseRating()" />
@@ -106,8 +113,10 @@ function decreaseRating() {
                 <span>
                     {{ review.message }}
                 </span>
-                <div class="flex justify-between">
-                    <div>Score: {{ review.score }}</div>
+                <div class="flex flex-col justify-between">
+                    <span>{{ review.score / 240 * maxRating }}</span>
+                    <star-rating :rating="review.score / 240 * maxRating" :read-only="true" :increment="incrementSizeRating"
+                        :max-rating="maxRating" />
                     <div class="text-slate-600">{{ review.created_at }}</div>
                 </div>
             </div>
