@@ -32,7 +32,7 @@ async function uploadReview() {
         .from('drink_reviews')
         .insert({
             message: reviewText.value,
-            score: databaseRating,
+            score: databaseRating.value,
             drink_id: drinkId.value,
             user_id: userId.value
         })
@@ -48,7 +48,7 @@ async function uploadReview() {
     let newReviews = allReviews.value
     newReviews.push({
         message: reviewText.value,
-        score: reviewRating.value,
+        score: databaseRating.value,
         created_at: "just now"
     })
     allReviews.value = newReviews
@@ -99,7 +99,7 @@ function decreaseRating() {
                     <Minus class="h-8" @click="decreaseRating()" />
                 </div>
                 <star-rating v-model:rating="reviewRating" :increment="incrementSizeRating" :max-rating="maxRating"
-                    :animate="true" :show-rating="false"></star-rating>
+                    :animate="true" :show-rating="false" :star-size="34" :rounded-corners="true" :border-width="6" />
                 <div class="h-full flex flex-col justify-center">
                     <Plus class="h-8" @click="incrementRating()" />
                 </div>
@@ -110,13 +110,13 @@ function decreaseRating() {
     <div class="flex flex-col justify-center">
         <div v-for="review in allReviews" key="review" class="flex justify-center">
             <div class="flex flex-col rounded-xl bg-gray-200 w-3/4 p-4 m-2">
-                <span>
-                    {{ review.message }}
-                </span>
                 <div class="flex flex-col justify-between">
-                    <span>{{ review.score / 240 * maxRating }}</span>
                     <star-rating :rating="review.score / 240 * maxRating" :read-only="true" :increment="incrementSizeRating"
-                        :max-rating="maxRating" />
+                        :max-rating="maxRating" :star-size="20" :show-rating="false" :rounded-corners="true"
+                        :border-width="6" />
+                    <span class="my-2">
+                        {{ review.message }}
+                    </span>
                     <div class="text-slate-600">{{ review.created_at }}</div>
                 </div>
             </div>
