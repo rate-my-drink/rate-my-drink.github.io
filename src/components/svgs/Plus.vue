@@ -1,7 +1,3 @@
-<script setup>
-
-</script>
-
 <template>
     <svg width="24mm" height="24mm" viewBox="0 0 24 24" version="1.1" id="svg1"
         inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)" sodipodi:docname="plus.svg"
