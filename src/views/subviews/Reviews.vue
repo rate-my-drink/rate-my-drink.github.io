@@ -4,6 +4,7 @@ import { supabase } from "../../config/supabase.ts"
 import { inject } from 'vue'
 import StarRating from 'vue-star-rating'
 import Plus from "../../components/svgs/Plus.vue";
+import Minus from "../../components/svgs/Minus.vue";
 
 const { userId } = inject('userName')
 
@@ -15,7 +16,9 @@ const reviewText = ref("")
 const reviewRating = ref(5)
 const errorMessage = ref(null)
 const allReviews = ref([])
-const rating = ref(0)
+const maxRating = ref(7)
+const incrementSizeRating = ref(1)
+
 async function uploadReview() {
     const { error } = await supabase
         .from('drink_reviews')
@@ -58,6 +61,22 @@ supabase
         }
         allReviews.value = data
     })
+
+function incrementRating() {
+    if (reviewRating.value < maxRating.value) {
+        reviewRating.value += incrementSizeRating.value
+    } else {
+        reviewRating.value = maxRating.value
+    }
+}
+
+function decreaseRating() {
+    if (reviewRating.value > 0) {
+        reviewRating.value -= incrementSizeRating.value
+    } else {
+        reviewRating.value = 0
+    }
+}
 </script>
 
 <template>
@@ -68,11 +87,15 @@ supabase
         <div class="flex flex-col justify-center w-3/4">
             <textarea class="m-2 p-2 bg-amber-100" type="text" v-model="reviewText"></textarea>
             <span>{{ reviewRating }}</span>
-            <div class="flex">
-
-                <star-rating v-model:rating="reviewRating" :increment="1" :max-rating="7" :animate="true"
-                    :show-rating="false"></star-rating>
-                <Plus />
+            <div class="flex justify-center">
+                <div class="h-full flex flex-col justify-center">
+                    <Minus class="h-8" @click="decreaseRating()" />
+                </div>
+                <star-rating v-model:rating="reviewRating" :increment="incrementSizeRating" :max-rating="maxRating"
+                    :animate="true" :show-rating="false"></star-rating>
+                <div class="h-full flex flex-col justify-center">
+                    <Plus class="h-8" @click="incrementRating()" />
+                </div>
             </div>
             <button class="button" @click="uploadReview">Add review</button>
         </div>
