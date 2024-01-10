@@ -20,6 +20,8 @@ const maxRating = ref(5)
 const incrementSizeRating = ref(0.5)
 
 const databaseRating = computed(() => {
+    // The database score is an uint8 from 0 till 240
+    // This gives room in the future to change to a different scale without changing the database.
     if (allReviews.value.length === 0) {
         return 0;
     }
