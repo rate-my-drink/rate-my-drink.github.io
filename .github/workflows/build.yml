@@ -16,4 +16,3 @@ jobs:
           username: "rate-my-drink"
           reponame: "rate-my-drink.github.io"
           token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
-          useyarn: true
