@@ -20,6 +20,6 @@ export default defineConfig({
     globals: true,
     // simulate DOM with happy-dom
     // (requires installing happy-dom as a peer dependency)
-    environment: 'happy-dom'
-  }
+    environment: "happy-dom",
+  },
 });
