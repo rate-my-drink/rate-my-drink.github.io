@@ -5,6 +5,17 @@ import { inject } from 'vue'
 import StarRating from 'vue-star-rating'
 import Plus from "../../components/svgs/Plus.vue";
 import Minus from "../../components/svgs/Minus.vue";
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
+const $toast = useToast();
+let instance = $toast.success('You did it!');
+
+// Force dismiss specific toast
+instance.dismiss();
+
+// Dismiss all opened toast immediately
+$toast.clear();
 
 const { userId } = inject('userName')
 
@@ -45,6 +56,11 @@ async function uploadReview() {
             return
         }
         errorMessage.value = "There was an error uploading your review"
+        $toast.open({
+            message: 'Something went wrong!',
+            type: 'error',
+            // all of other options may go here
+        });
         return
     }
     let newReviews = allReviews.value
