@@ -8,7 +8,9 @@ import Minus from "../../components/svgs/Minus.vue";
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
-const $toast = useToast();
+const $toast = useToast({
+    position: "top",
+});;
 let instance = $toast.success('You did it!');
 
 // Force dismiss specific toast
@@ -56,11 +58,7 @@ async function uploadReview() {
             return
         }
         errorMessage.value = "There was an error uploading your review"
-        $toast.open({
-            message: 'Something went wrong!',
-            type: 'error',
-            // all of other options may go here
-        });
+        $toast.error('Something went wrong!');
         return
     }
     let newReviews = allReviews.value
