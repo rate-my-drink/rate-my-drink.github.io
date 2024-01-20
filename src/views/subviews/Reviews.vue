@@ -19,17 +19,18 @@ instance.dismiss();
 // Dismiss all opened toast immediately
 $toast.clear();
 
-const { userId } = inject('userName')
+const { userId, userIsVerified } = inject('userName')
 
 const props = defineProps({
     drinkId: String,
 });
 const { drinkId } = toRefs(props);
-const reviewText = ref("")
-const reviewRating = ref(5)
+const reviewText = ref("Your review")
+const reviewRating = ref(2.5)
 const allReviews = ref([])
 const maxRating = ref(5)
 const incrementSizeRating = ref(0.5)
+const reviewId = ref(null)
 
 const databaseRating = computed(() => {
     // The database score is an uint8 from 0 till 240
@@ -40,48 +41,83 @@ const databaseRating = computed(() => {
     return Math.round(reviewRating.value * 240 / maxRating.value);
 });
 
+if (userId.value) {
+    supabase.from("drink_reviews")
+        .select("id, message, score")
+        .eq("user_id", userId.value)
+        .eq("drink_id", drinkId.value)
+        .then((res) => {
+            const data = res.data
+            if (data === null) {
+                return
+            }
+            reviewId.value = data[0].id
+            reviewText.value = data[0].message
+            reviewRating.value = data[0].score / 240 * maxRating.value
+        })
+}
 
 async function uploadReview() {
     if (!userId.value) {
         $toast.error('You need to login to leave a review');
         return
     }
-    const { error } = await supabase
-        .from('drink_reviews')
-        .insert({
-            message: reviewText.value,
-            score: databaseRating.value,
-            drink_id: drinkId.value,
-            user_id: userId.value
-        })
-
-    if (error) {
-        $toast.error(error.message);
+    if (!userIsVerified.value) {
+        $toast.error('You need to verify your email to leave a review');
         return
     }
-    let newReviews = allReviews.value
-    newReviews.push({
-        message: reviewText.value,
-        score: databaseRating.value,
-        created_at: "just now"
-    })
-    allReviews.value = newReviews
-}
-
-supabase
-    .from('drink_reviews')
-    .select('created_at, score, message')
-    .eq('drink_id', drinkId.value)
-    .order('created_at')
-    .limit(10)
-    .then((res) => {
-        const data = res.data
-        if (data === null) {
-            allReviews.value = []
+    if (reviewId.value) {
+        let { error } = await supabase
+            .from('drink_reviews')
+            .update({
+                message: reviewText.value,
+                score: databaseRating.value,
+                drink_id: drinkId.value,
+                user_id: userId.value
+            }).eq(
+                "id", reviewId.value
+            )
+        if (error) {
+            $toast.error(error.message);
             return
         }
-        allReviews.value = data
-    })
+    } else {
+        let { error } = await supabase
+            .from('drink_reviews')
+            .insert({
+                message: reviewText.value,
+                score: databaseRating.value,
+                drink_id: drinkId.value,
+                user_id: userId.value
+            })
+
+
+        if (error) {
+            $toast.error(error.message);
+            return
+        }
+    }
+
+    getReviews()
+}
+
+async function getReviews() {
+    supabase
+        .from('drink_reviews')
+        .select('created_at, score, message')
+        .eq('drink_id', drinkId.value)
+        .order('created_at', { ascending: false })
+        .limit(10)
+        .then((res) => {
+            const data = res.data
+            if (data === null) {
+                allReviews.value = []
+                return
+            }
+            allReviews.value = data
+        })
+}
+getReviews()
 
 function incrementRating() {
     if (reviewRating.value < maxRating.value) {

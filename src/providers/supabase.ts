@@ -3,6 +3,7 @@ import { supabase } from "../config/supabase"
 
 const userName = ref<undefined|string>(undefined);
 const userId = ref<undefined|string>(undefined);
+const userIsVerified = ref<boolean>(false)
 async function login(email: string, password: string) {
   await supabase.auth.signInWithPassword({
       email,
@@ -48,6 +49,7 @@ async function updateUserName() {
     if(!_session){
       userId.value = undefined
       userName.value = undefined
+      userIsVerified.value = false
       return
     }
     const newUserId = _session.user.id
@@ -59,6 +61,13 @@ async function updateUserName() {
       userName.value = undefined
       return
     }
+    // Is verified
+    if(_session.user.confirmed_at){
+      userIsVerified.value = true
+    }else{
+      userIsVerified.value = false
+    }
+    
     supabase.from("user_profiles").select("name").then((res) => {
       const data = res.data
       if(data){
@@ -74,5 +83,5 @@ async function updateUserName() {
 
 export function provideSupabase(app: App) {
   updateUserName()
-  app.provide("userName", {userName, userId, login, signup, logout});
+  app.provide("userName", {userName, userId, login, signup, logout, userIsVerified});
 }
