@@ -43,6 +43,10 @@ const databaseRating = computed(() => {
 
 
 async function uploadReview() {
+    if (!userId.value) {
+        $toast.error('You need to login to leave a review');
+        return
+    }
     const { error } = await supabase
         .from('drink_reviews')
         .insert({
