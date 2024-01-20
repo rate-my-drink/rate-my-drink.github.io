@@ -25,7 +25,7 @@ const props = defineProps({
     drinkId: String,
 });
 const { drinkId } = toRefs(props);
-const reviewText = ref("Your review")
+const reviewText = ref("")
 const reviewRating = ref(2.5)
 const allReviews = ref([])
 const maxRating = ref(5)
@@ -90,7 +90,6 @@ async function uploadReview() {
                 drink_id: drinkId.value,
                 user_id: userId.value
             })
-
 
         if (error) {
             $toast.error(error.message);
