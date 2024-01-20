@@ -27,7 +27,6 @@ const props = defineProps({
 const { drinkId } = toRefs(props);
 const reviewText = ref("")
 const reviewRating = ref(5)
-const errorMessage = ref(null)
 const allReviews = ref([])
 const maxRating = ref(5)
 const incrementSizeRating = ref(0.5)
@@ -57,12 +56,7 @@ async function uploadReview() {
         })
 
     if (error) {
-        if (error.status === 401) {
-            errorMessage.value = "You must be logged in to upload a review"
-            return
-        }
-        errorMessage.value = "There was an error uploading your review"
-        $toast.error('Something went wrong!');
+        $toast.error(error.message);
         return
     }
     let newReviews = allReviews.value
@@ -72,7 +66,6 @@ async function uploadReview() {
         created_at: "just now"
     })
     allReviews.value = newReviews
-    errorMessage.value = null
 }
 
 supabase
@@ -108,9 +101,6 @@ function decreaseRating() {
 </script>
 
 <template>
-    <div v-if="errorMessage">
-        {{ errorMessage }}
-    </div>
     <div class="flex justify-center w-full">
         <div class="flex flex-col justify-center w-3/4">
             <textarea class="m-2 p-2 bg-amber-100" type="text" v-model="reviewText"></textarea>
