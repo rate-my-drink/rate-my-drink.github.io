@@ -5,35 +5,39 @@ const userName = ref<undefined|string>(undefined);
 const userId = ref<undefined|string>(undefined);
 const userIsVerified = ref<boolean>(false)
 async function login(email: string, password: string) {
-  await supabase.auth.signInWithPassword({
+  const {data, error} = await supabase.auth.signInWithPassword({
       email,
       password
   })
-  updateUserName()
+  if(!error){
+    updateUserName()
+  }
+  return {data, error}
 }
 
 async function signup(email: string, password: string, name: string | undefined = undefined) {
-  supabase.auth.signUp({
+  const {data, error} = await supabase.auth.signUp({
       email,
       password
   })
-  .then((res) => {
-    const newId = res.data.user.id
-    if(newId){
-      userId.value = newId
-    }else{
-      userId.value = undefined
-      return
+  
+  if(error){
+    return {data, error}
+  }
+  const newId = data.user.id
+  if(newId){
+    userId.value = newId
+  }else{
+    userId.value = undefined
+    return {data, error: {message: "New user account is not made"}}
+  }
+  supabase.from("user_profiles").insert({
+    user_id: userId.value,
+    name
+  }).then(
+    (res) => {
+      userName.value = name
     }
-    supabase.from("user_profiles").insert({
-      user_id: userId.value,
-      name
-    }).then(
-      (res) => {
-        userName.value = name
-      }
-    )
-  }    
   )
 }
 
