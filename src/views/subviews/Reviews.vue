@@ -10,14 +10,7 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 
 const $toast = useToast({
     position: "top",
-});;
-let instance = $toast.success('You did it!');
-
-// Force dismiss specific toast
-instance.dismiss();
-
-// Dismiss all opened toast immediately
-$toast.clear();
+});
 
 const { userId, userIsVerified } = inject('userName')
 
