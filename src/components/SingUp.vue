@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
 
 const { login, signup } = inject('userName')
 const emit = defineEmits(['update:modelValue']);
@@ -8,23 +11,34 @@ const name = ref("")
 const password = ref("")
 const isSignUp = ref(false)
 
+const $toast = useToast({
+    position: "top",
+});
+
 const clickBackground = (): void => {
     emit('update:modelValue', false);
 };
 
 async function _signup() {
-    await signup(
+    const { error } = await signup(
         email.value,
         password.value,
         name.value
     )
-    emit('update:modelValue', false);
+    if (!error) {
+        emit('update:modelValue', false);
+        return
+    }
+    $toast.error(error.message);
 }
 
 async function _login() {
-    await login(email.value, password.value
-    )
-    emit('update:modelValue', false);
+    const { error } = await login(email.value, password.value)
+    if (!error) {
+        emit('update:modelValue', false);
+        return
+    }
+    $toast.error(error.message);
 }
 
 </script>
@@ -35,9 +49,9 @@ async function _login() {
             <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2" v-on:click.stop>
                 <div class="bg-slate-200 p-8 rounded-3xl shadow-md text-black w-full ">
                     <div class="flex w-full justify-between">
-                        <h1 @click="isSignUp = true" class="text-3xl text-center rounded-t-3xl"
+                        <h1 @click="isSignUp = true" class="text-3xl text-center rounded-t-3xl px-4"
                             :class="(isSignUp) ? 'bg-amber-400' : 'text-slate-500'">Sign up</h1>
-                        <h1 @click="isSignUp = false" class="text-3xl text-center rounded-t-3xl"
+                        <h1 @click="isSignUp = false" class="text-3xl text-center rounded-t-3xl px-4"
                             :class="(isSignUp) ? 'text-slate-500' : 'bg-amber-400'">Log in</h1>
                     </div>
                     <div class="bg-amber-400 p-3 rounded-b-3xl" :class="(isSignUp) ? 'rounded-tr-3xl' : 'rounded-tl-3xl'">
