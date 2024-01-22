@@ -35,9 +35,6 @@ const reviewId = ref(null)
 const databaseRating = computed(() => {
     // The database score is an uint8 from 0 till 240
     // This gives room in the future to change to a different scale without changing the database.
-    if (allReviews.value.length === 0) {
-        return 0;
-    }
     return Math.round(reviewRating.value * 240 / maxRating.value);
 });
 
