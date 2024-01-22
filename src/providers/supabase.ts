@@ -39,6 +39,7 @@ async function signup(email: string, password: string, name: string | undefined 
       userName.value = name
     }
   )
+  return {data, error}
 }
 
 async function logout() {
