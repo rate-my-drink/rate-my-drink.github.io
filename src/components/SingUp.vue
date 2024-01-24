@@ -26,6 +26,7 @@ async function _signup() {
         name.value
     )
     if (!error) {
+        $toast.info("Please check your email for a verification link");
         emit('update:modelValue', false);
         return
     }
