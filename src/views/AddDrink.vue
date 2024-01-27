@@ -4,15 +4,20 @@ import { supabase } from "../config/supabase.ts"
 import router from "../router.js"
 import { inject } from 'vue'
 import { upload_image } from "../helpers/supabase/upload_image.ts"
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
-const { userId } = inject('userName')
-const errorMessage = ref(null)
+const { userId, isUserVerified } = inject('userName')
 const producers = ref([])
 const producerId = ref(null)
 const previewImage = ref("")
 const previewImageType = ref("")
 const name = ref("")
 const description = ref("")
+
+const $toast = useToast({
+    position: "top",
+});
 
 // Get producers from supabase
 async function getProducers() {
@@ -30,12 +35,16 @@ async function getProducers() {
 
 // Upload a drink to supabase
 async function uploadDrink() {
+    if (!isUserVerified()) {
+        return
+    }
+
     if (!name.value) {
-        errorMessage.value = "The Drink most have a name"
+        $toast.error("The Drink most have a name")
         return
     }
     if (!producerId.value) {
-        errorMessage.value = "The Drink most have a producer"
+        $toast.error("The Drink most have a producer")
         return
     }
     const folderName = `drinks/${producerId.value}`
@@ -55,15 +64,11 @@ async function uploadDrink() {
         })
 
     if (error) {
-        if (error.status === 401) {
-            errorMessage.value = "You must be logged in to upload a drink"
-            return
-        }
-        errorMessage.value = "There was an error uploading your drink"
+        $toast.error("There was an error uploading your drink")
         return
     }
-    errorMessage.value = null
-    router.push({ path: '/' })
+    $toast.success(`${name.value} has been added`)
+    router.push({ path: import.meta.env.BASE_URL })
 }
 
 function uploadImage(e) {
@@ -82,10 +87,6 @@ getProducers()
 <template>
     <div class="w-full flex justify-center h-full md:mt-8">
         <div class="flex flex-col justify-start bg-white rounded-lg shadow-lg h-full w-full lg:w-3/4">
-
-            <div v-if="errorMessage" class="w-full bg-red-300 rounded-t-lg p-1">
-                {{ errorMessage }}
-            </div>
             <div class="flex flex-col md:flex-row justify-start h-full w-full">
                 <div class="p-4 w-full md:w-1/2 ">
                     <div>
