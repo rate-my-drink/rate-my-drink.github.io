@@ -5,6 +5,25 @@ const userName = ref<undefined|string>(undefined);
 const userId = ref<undefined|string>(undefined);
 const userIsVerified = ref<boolean>(false)
 
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
+const $toast = useToast({
+    position: "top",
+});
+
+function isUserVerified(){
+  if (!userId.value) {
+    $toast.error('You need to login to leave a review');
+    return false
+}
+if (!userIsVerified.value) {
+    $toast.error('You need to verify your email to leave a review');
+    return false
+}
+return true
+}
+
 async function login(email: string, password: string) {
   const {data, error} = await supabase.auth.signInWithPassword({
       email,
@@ -88,5 +107,5 @@ async function updateUserName() {
 
 export function provideSupabase(app: App) {
   updateUserName()
-  app.provide("userName", {userName, userId, login, signup, logout, userIsVerified});
+  app.provide("userName", {userName, userId, login, signup, logout, isUserVerified});
 }
