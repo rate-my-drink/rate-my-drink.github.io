@@ -12,7 +12,7 @@ const $toast = useToast({
     position: "top",
 });
 
-const { userId, userIsVerified } = inject('userName')
+const { userId, isUserVerified } = inject('userName')
 
 const props = defineProps({
     drinkId: String,
@@ -48,12 +48,7 @@ if (userId.value) {
 }
 
 async function uploadReview() {
-    if (!userId.value) {
-        $toast.error('You need to login to leave a review');
-        return
-    }
-    if (!userIsVerified.value) {
-        $toast.error('You need to verify your email to leave a review');
+    if (!isUserVerified()) {
         return
     }
     if (reviewId.value) {
