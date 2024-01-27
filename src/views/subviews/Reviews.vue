@@ -38,7 +38,7 @@ if (userId.value) {
         .eq("drink_id", drinkId.value)
         .then((res) => {
             const data = res.data
-            if (data === null) {
+            if (!data) {
                 return
             }
             reviewId.value = data[0].id

@@ -4,6 +4,7 @@ import { supabase } from "../config/supabase"
 const userName = ref<undefined|string>(undefined);
 const userId = ref<undefined|string>(undefined);
 const userIsVerified = ref<boolean>(false)
+
 async function login(email: string, password: string) {
   const {data, error} = await supabase.auth.signInWithPassword({
       email,
@@ -16,30 +17,29 @@ async function login(email: string, password: string) {
 }
 
 async function signup(email: string, password: string, name: string | undefined = undefined) {
-  const {data, error} = await supabase.auth.signUp({
+  const res_signup = await supabase.auth.signUp({
       email,
       password
   })
-  
-  if(error){
-    return {data, error}
+
+  if(res_signup.error){
+    return {data: res_signup.data, error: res_signup.error}
   }
-  const newId = data.user.id
-  if(newId){
-    userId.value = newId
-  }else{
-    userId.value = undefined
-    return {data, error: {message: "New user account is not made"}}
+  const newId = res_signup.data.user.id
+  if(!newId){
+    return {data: res_signup.data, error: {message: "New user account is not made"}}
   }
-  supabase.from("user_profiles").insert({
-    user_id: userId.value,
+  const res_user_profile = await supabase.from("user_profiles").insert({
+    user_id: newId,
     name
-  }).then(
-    (res) => {
-      userName.value = name
-    }
-  )
-  return {data, error}
+  })
+  if(res_user_profile.error){
+    return {data: res_user_profile.data, error: {message: "The email address is already used"}}
+  }
+  if(res_user_profile.data){
+    userName.value = res_user_profile.data.name
+  }
+  return {data: res_user_profile.data, error: res_user_profile.error}
 }
 
 async function logout() {
