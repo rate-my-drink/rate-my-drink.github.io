@@ -125,29 +125,62 @@ getDrinks();
     </div>
   </div>
   <div class="flex h-full w-full justify-center">
-    <div class="flex h-full w-full flex-col justify-center bg-slate-200 p-2 px-6 xl:w-4/5">
+    <div
+      class="flex h-full w-full flex-col justify-center bg-slate-200 p-2 px-6 xl:w-4/5"
+    >
       <div class="flex w-full justify-center">
-        <router-link class="button m-4 w-4/5 text-2xl font-bold" to="/add-drink">Add Drink</router-link>
+        <router-link class="button m-4 w-4/5 text-2xl font-bold" to="/add-drink"
+          >Add Drink</router-link
+        >
       </div>
       <div class="flex w-full justify-center">
         <div class="flex w-4/5 justify-center">
-          <input type="text" v-model="searchTerm" class="w-5/6 rounded border border-gray-400 px-4 py-2"
-            placeholder="Search drinks..." @input="getDrinks()" />
-          <funnel class="ml-2 h-12 w-12 hover:cursor-pointer" @click="toggleShowFilters()" />
+          <input
+            type="text"
+            v-model="searchTerm"
+            class="w-5/6 rounded border border-gray-400 px-4 py-2"
+            placeholder="Search drinks..."
+            @input="getDrinks()"
+          />
+          <funnel
+            class="ml-2 h-12 w-12 hover:cursor-pointer"
+            @click="toggleShowFilters()"
+          />
         </div>
       </div>
-      <div v-if="showFilters" class="fixed left-0 right-0 top-0 z-0 h-screen w-screen bg-transparent"
-        @click="showFilters = false"></div>
+      <div
+        v-if="showFilters"
+        class="fixed left-0 right-0 top-0 z-0 h-screen w-screen bg-transparent"
+        @click="showFilters = false"
+      ></div>
       <div class="z-10 h-0">
-        <div class="static my-2 origin-bottom transform rounded-lg bg-slate-400 duration-500 ease-in-out" :class="showFilters ? 'translate-y-0 p-4' : '-translate-y-full scale-y-0'
-          ">
+        <div
+          class="static my-2 origin-bottom transform rounded-lg bg-slate-400 duration-500 ease-in-out"
+          :class="
+            showFilters ? 'translate-y-0 p-4' : '-translate-y-full scale-y-0'
+          "
+        >
           <!-- Close button -->
           <div class="flex justify-end">
             <div @click="showFilters = false">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-6 w-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 18.75 7.5-7.5 7.5 7.5" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 7.5-7.5 7.5 7.5" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="h-6 w-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m4.5 18.75 7.5-7.5 7.5 7.5"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m4.5 12.75 7.5-7.5 7.5 7.5"
+                />
               </svg>
             </div>
           </div>
@@ -156,7 +189,12 @@ getDrinks();
           <div class="grid grid-cols-4 gap-4">
             <div v-for="producer in allProducers" :key="producer.id">
               <label>
-                <input type="checkbox" id="producer.id" v-model="producer.isSelected" @change="getDrinks()" />
+                <input
+                  type="checkbox"
+                  id="producer.id"
+                  v-model="producer.isSelected"
+                  @change="getDrinks()"
+                />
                 {{ producer.name }}
               </label>
             </div>
@@ -165,7 +203,11 @@ getDrinks();
       </div>
       <div class="grid w-full grid-cols-3 gap-4">
         <div class="flex justify-start">
-          <button v-show="currentPage != 0" class="m-2 flex items-center rounded-l-full p-2 px-4" @click="previousPage()">
+          <button
+            v-show="currentPage != 0"
+            class="m-2 flex items-center rounded-l-full p-2 px-4"
+            @click="previousPage()"
+          >
             <arrow class="rotate-180" />
             Previous page
           </button>
@@ -176,20 +218,34 @@ getDrinks();
           </span>
         </span>
         <div class="flex justify-end">
-          <button v-show="currentPage < maxPageNum" class="m-2 flex items-center rounded-r-full p-2 px-4"
-            @click="nextPage()">
+          <button
+            v-show="currentPage < maxPageNum"
+            class="m-2 flex items-center rounded-r-full p-2 px-4"
+            @click="nextPage()"
+          >
             Next page
             <arrow />
           </button>
         </div>
       </div>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+      <div
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+      >
         <Loadingcard v-if="isLoading" v-for="num in numbPerPage" :key="num" />
-        <DrinkCard v-else v-for="drink in drinks" :product="drink" :key="drink.id" />
+        <DrinkCard
+          v-else
+          v-for="drink in drinks"
+          :product="drink"
+          :key="drink.id"
+        />
       </div>
       <div class="grid w-full grid-cols-3 gap-4">
         <div class="flex justify-start">
-          <button v-show="currentPage != 0" class="m-2 flex items-center rounded-l-full p-2 px-4" @click="previousPage()">
+          <button
+            v-show="currentPage != 0"
+            class="m-2 flex items-center rounded-l-full p-2 px-4"
+            @click="previousPage()"
+          >
             <arrow class="rotate-180" />
             Previous page
           </button>
@@ -200,8 +256,11 @@ getDrinks();
           </span>
         </span>
         <div class="flex justify-end">
-          <button v-show="currentPage < maxPageNum" class="m-2 flex items-center rounded-r-full p-2 px-4"
-            @click="nextPage()">
+          <button
+            v-show="currentPage < maxPageNum"
+            class="m-2 flex items-center rounded-r-full p-2 px-4"
+            @click="nextPage()"
+          >
             Next page
             <arrow />
           </button>

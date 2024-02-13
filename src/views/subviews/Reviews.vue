@@ -9,13 +9,13 @@ import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
 
 const $toast = useToast({
-    position: "top",
+  position: "top",
 });
 
 const { userId, isUserVerified } = inject("userName");
 
 const props = defineProps({
-    drinkId: String,
+  drinkId: String,
 });
 const { drinkId } = toRefs(props);
 const reviewText = ref("");
@@ -26,128 +26,147 @@ const incrementSizeRating = ref(0.5);
 const reviewId = ref(null);
 
 const databaseRating = computed(() => {
-    // The database score is an uint8 from 0 till 240
-    // This gives room in the future to change to a different scale without changing the database.
-    return Math.round((reviewRating.value * 240) / maxRating.value);
+  // The database score is an uint8 from 0 till 240
+  // This gives room in the future to change to a different scale without changing the database.
+  return Math.round((reviewRating.value * 240) / maxRating.value);
 });
 
 if (userId.value) {
-    supabase
-        .from("drink_reviews")
-        .select("id, message, score")
-        .eq("user_id", userId.value)
-        .eq("drink_id", drinkId.value)
-        .then((res) => {
-            const data = res.data;
-            if (!data) {
-                return;
-            }
-            reviewId.value = data[0].id;
-            reviewText.value = data[0].message;
-            reviewRating.value = (data[0].score / 240) * maxRating.value;
-        });
+  supabase
+    .from("drink_reviews")
+    .select("id, message, score")
+    .eq("user_id", userId.value)
+    .eq("drink_id", drinkId.value)
+    .then((res) => {
+      const data = res.data;
+      if (!data) {
+        return;
+      }
+      reviewId.value = data[0].id;
+      reviewText.value = data[0].message;
+      reviewRating.value = (data[0].score / 240) * maxRating.value;
+    });
 }
 
 async function uploadReview() {
-    if (!isUserVerified()) {
-        return;
+  if (!isUserVerified()) {
+    return;
+  }
+  if (reviewId.value) {
+    let { error } = await supabase
+      .from("drink_reviews")
+      .update({
+        message: reviewText.value,
+        score: databaseRating.value,
+        drink_id: drinkId.value,
+        user_id: userId.value,
+      })
+      .eq("id", reviewId.value);
+    if (error) {
+      $toast.error(error.message);
+      return;
     }
-    if (reviewId.value) {
-        let { error } = await supabase
-            .from("drink_reviews")
-            .update({
-                message: reviewText.value,
-                score: databaseRating.value,
-                drink_id: drinkId.value,
-                user_id: userId.value,
-            })
-            .eq("id", reviewId.value);
-        if (error) {
-            $toast.error(error.message);
-            return;
-        }
-    } else {
-        let { error } = await supabase.from("drink_reviews").insert({
-            message: reviewText.value,
-            score: databaseRating.value,
-            drink_id: drinkId.value,
-            user_id: userId.value,
-        });
+  } else {
+    let { error } = await supabase.from("drink_reviews").insert({
+      message: reviewText.value,
+      score: databaseRating.value,
+      drink_id: drinkId.value,
+      user_id: userId.value,
+    });
 
-        if (error) {
-            $toast.error(error.message);
-            return;
-        }
+    if (error) {
+      $toast.error(error.message);
+      return;
     }
+  }
 
-    getReviews();
+  getReviews();
 }
 
 async function getReviews() {
-    supabase
-        .from("drink_reviews")
-        .select("created_at, score, message")
-        .eq("drink_id", drinkId.value)
-        .order("created_at", { ascending: false })
-        .limit(10)
-        .then((res) => {
-            const data = res.data;
-            if (data === null) {
-                allReviews.value = [];
-                return;
-            }
-            allReviews.value = data;
-        });
+  supabase
+    .from("drink_reviews")
+    .select("created_at, score, message")
+    .eq("drink_id", drinkId.value)
+    .order("created_at", { ascending: false })
+    .limit(10)
+    .then((res) => {
+      const data = res.data;
+      if (data === null) {
+        allReviews.value = [];
+        return;
+      }
+      allReviews.value = data;
+    });
 }
 getReviews();
 
 function incrementRating() {
-    if (reviewRating.value < maxRating.value) {
-        reviewRating.value += incrementSizeRating.value;
-    } else {
-        reviewRating.value = maxRating.value;
-    }
+  if (reviewRating.value < maxRating.value) {
+    reviewRating.value += incrementSizeRating.value;
+  } else {
+    reviewRating.value = maxRating.value;
+  }
 }
 
 function decreaseRating() {
-    if (reviewRating.value > 0) {
-        reviewRating.value -= incrementSizeRating.value;
-    } else {
-        reviewRating.value = 0;
-    }
+  if (reviewRating.value > 0) {
+    reviewRating.value -= incrementSizeRating.value;
+  } else {
+    reviewRating.value = 0;
+  }
 }
 </script>
 
 <template>
-    <div class="flex w-full justify-center">
-        <div class="flex w-3/4 flex-col justify-center">
-            <textarea class="m-2 bg-amber-100 p-2" type="text" v-model="reviewText"></textarea>
-            <div class="flex justify-center">
-                <div class="flex h-full flex-col justify-center">
-                    <Minus class="h-8" @click="decreaseRating()" />
-                </div>
-                <star-rating v-model:rating="reviewRating" :increment="incrementSizeRating" :max-rating="maxRating"
-                    :animate="true" :show-rating="false" :star-size="34" :rounded-corners="true" :border-width="6" />
-                <div class="flex h-full flex-col justify-center">
-                    <Plus class="h-8" @click="incrementRating()" />
-                </div>
-            </div>
-            <button class="button" @click="uploadReview">Add review</button>
+  <div class="flex w-full justify-center">
+    <div class="flex w-3/4 flex-col justify-center">
+      <textarea
+        class="m-2 bg-amber-100 p-2"
+        type="text"
+        v-model="reviewText"
+      ></textarea>
+      <div class="flex justify-center">
+        <div class="flex h-full flex-col justify-center">
+          <Minus class="h-8" @click="decreaseRating()" />
         </div>
-    </div>
-    <div class="flex flex-col justify-center">
-        <div v-for="review in allReviews" key="review" class="flex justify-center">
-            <div class="m-2 flex w-3/4 flex-col rounded-xl bg-gray-200 p-4">
-                <div class="flex flex-col justify-between">
-                    <star-rating :rating="(review.score / 240) * maxRating" :read-only="true"
-                        :increment="incrementSizeRating" :max-rating="maxRating" :star-size="20" :show-rating="false"
-                        :rounded-corners="true" :border-width="6" />
-                    <span class="my-2">
-                        {{ review.message }}
-                    </span>
-                    <div class="text-slate-600">{{ review.created_at }}</div>
-                </div>
-            </div>
+        <star-rating
+          v-model:rating="reviewRating"
+          :increment="incrementSizeRating"
+          :max-rating="maxRating"
+          :animate="true"
+          :show-rating="false"
+          :star-size="34"
+          :rounded-corners="true"
+          :border-width="6"
+        />
+        <div class="flex h-full flex-col justify-center">
+          <Plus class="h-8" @click="incrementRating()" />
         </div>
+      </div>
+      <button class="button" @click="uploadReview">Add review</button>
     </div>
+  </div>
+  <div class="flex flex-col justify-center">
+    <div v-for="review in allReviews" key="review" class="flex justify-center">
+      <div class="m-2 flex w-3/4 flex-col rounded-xl bg-gray-200 p-4">
+        <div class="flex flex-col justify-between">
+          <star-rating
+            :rating="(review.score / 240) * maxRating"
+            :read-only="true"
+            :increment="incrementSizeRating"
+            :max-rating="maxRating"
+            :star-size="20"
+            :show-rating="false"
+            :rounded-corners="true"
+            :border-width="6"
+          />
+          <span class="my-2">
+            {{ review.message }}
+          </span>
+          <div class="text-slate-600">{{ review.created_at }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

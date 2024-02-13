@@ -11,11 +11,21 @@ const showSignUp = ref(false);
 <template>
   <SingUp v-show="showSignUp" v-model="showSignUp" />
   <div class="flex items-center justify-around bg-amber-500 py-6">
-    <router-link class="px-4 text-2xl font-bold text-black" to="/">Home</router-link>
-    <button v-if="userName" @click="logout()" class="px-4 text-2xl font-bold text-black">
+    <router-link class="px-4 text-2xl font-bold text-black" to="/"
+      >Home</router-link
+    >
+    <button
+      v-if="userName"
+      @click="logout()"
+      class="px-4 text-2xl font-bold text-black"
+    >
       Sign out
     </button>
-    <button v-else @click="showSignUp = !showSignUp" class="px-4 text-2xl font-bold text-black">
+    <button
+      v-else
+      @click="showSignUp = !showSignUp"
+      class="px-4 text-2xl font-bold text-black"
+    >
       Sign up
     </button>
     <span>

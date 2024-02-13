@@ -35,13 +35,20 @@ fetchDrink();
 
 <template>
   <div class="flex h-full w-full justify-center md:mt-8">
-    <div class="h-full w-full justify-start rounded-lg bg-white shadow-lg lg:w-3/4">
+    <div
+      class="h-full w-full justify-start rounded-lg bg-white shadow-lg lg:w-3/4"
+    >
       <div id="Top fields" class="flex flex-col md:flex-row">
-        <img :src="image_url" alt="Product Image"
-          class="h-full w-full rounded-br-3xl rounded-tl-lg object-cover md:w-1/2" />
+        <img
+          :src="image_url"
+          alt="Product Image"
+          class="h-full w-full rounded-br-3xl rounded-tl-lg object-cover md:w-1/2"
+        />
         <div class="w-full p-4 md:w-1/2">
           <h2 class="mb-2 text-xl font-semibold">{{ name }}</h2>
-          <span class="text-m p-4 font-semibold text-gray-600">Produced by {{ producer }}</span>
+          <span class="text-m p-4 font-semibold text-gray-600"
+            >Produced by {{ producer }}</span
+          >
           <p class="mb-4 text-gray-700">{{ description }}</p>
         </div>
       </div>
