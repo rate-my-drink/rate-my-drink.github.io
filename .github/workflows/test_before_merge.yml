@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Test Vue
     steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: npm install
-    - name: Run tests
-      run: npm run test
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm run test
