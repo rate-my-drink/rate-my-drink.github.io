@@ -20,8 +20,8 @@ test("maxPageNum - perfect division", async () => {
     },
   });
 
-  wrapper.vm.totalNumDrinks = 100
-  wrapper.vm.numbPerPage = 10
+  wrapper.vm.totalNumDrinks = 100;
+  wrapper.vm.numbPerPage = 10;
 
   expect(wrapper.vm.maxPageNum).toBe(9);
 });
@@ -35,8 +35,8 @@ test("maxPageNum - no drinks", async () => {
     },
   });
 
-  wrapper.vm.totalNumDrinks = 0
-  wrapper.vm.numbPerPage = 20
+  wrapper.vm.totalNumDrinks = 0;
+  wrapper.vm.numbPerPage = 20;
 
   expect(wrapper.vm.maxPageNum).toBe(0);
 });
@@ -51,8 +51,8 @@ test("maxPageNum - left over division", async () => {
     },
   });
 
-  wrapper.vm.totalNumDrinks = 105
-  wrapper.vm.numbPerPage = 20
+  wrapper.vm.totalNumDrinks = 105;
+  wrapper.vm.numbPerPage = 20;
 
   expect(wrapper.vm.maxPageNum).toBe(5);
 });
