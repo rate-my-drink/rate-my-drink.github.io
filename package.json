@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npx supabase@beta db start && vite",
+    "dev": "vite --mode localhost",
+    "supabase": "npx supabase@beta start -y",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
