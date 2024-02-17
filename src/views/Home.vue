@@ -86,14 +86,23 @@ function getAllProducers() {
   supabase
     .from("producers")
     .select("id, name")
-    .order("name", { ascending: true })
     .then((res) => {
       const data = res.data;
       if (data === null) {
         allProducers.value = [];
         return;
       }
-      allProducers.value = data.map((i) => ({ ...i, isSelected: false }));
+      let newAllProducers = data.map((i) => ({ ...i, isSelected: false }));
+      newAllProducers = newAllProducers.sort(function (a, b) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1;
+        }
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      });
+      allProducers.value = newAllProducers;
     });
 }
 
