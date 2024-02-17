@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "format": "npx prettier -w ."
+    "format": "npx prettier -w .",
+    "migrate": "npx supabase@beta migration new"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.33.1",
