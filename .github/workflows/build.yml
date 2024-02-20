@@ -23,7 +23,10 @@ jobs:
     - run: supabase db push
 
   apply:
-    if: needs.migrate.result == 'success'
+    # Only run this job if the previous job was successful
+    if: |
+      always() &&
+      needs.migrate.result == 'success'
     runs-on: ubuntu-latest
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -42,7 +45,9 @@ jobs:
     - run: terraform apply -auto-approve -no-color
 
   build_vue:
-    if: needs.apply.result == 'success'
+    if: |
+      always() &&
+      needs.apply.result == 'success'
     runs-on: ubuntu-latest
     name: Build Vue
     steps:
