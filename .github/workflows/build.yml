@@ -4,7 +4,6 @@ on:
   push:
     branches:
     - main
-    - version-the-database #TODO remove
 jobs:
   migrate:
     runs-on: ubuntu-latest
