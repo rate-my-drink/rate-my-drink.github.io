@@ -6,6 +6,7 @@ import { inject } from "vue";
 import { upload_image } from "../helpers/supabase/upload_image.ts";
 import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
+import SelectProducer from "../components/SelectProducer.vue";
 
 const { userId, isUserVerified } = inject("userName");
 const producers = ref([]);
@@ -107,22 +108,7 @@ getProducers();
               placeholder="Description of the drink"
             />
           </div>
-          <div>
-            <label class="text-gray-500">Producer</label>
-            <select
-              class="border-grey-light mb-4 block w-full rounded border p-3"
-              v-model="producerId"
-            >
-              <option value="" disabled selected>Select a producer</option>
-              <option
-                v-for="producer in producers"
-                :key="producer.id"
-                :value="producer.id"
-              >
-                {{ producer.name }}
-              </option>
-            </select>
-          </div>
+          <SelectProducer v-model="producerId" />
         </div>
 
         <label
