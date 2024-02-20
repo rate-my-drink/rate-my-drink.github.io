@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode localhost",
-    "supabase": "npx supabase@beta start -y",
+    "supabase": "npx supabase@beta start",
+    "supabase-stop": "npx supabase@beta stop",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
