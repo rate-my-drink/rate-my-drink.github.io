@@ -24,9 +24,7 @@ jobs:
 
   apply:
     # Only run this job if the previous job was successful
-    if: |
-      always() &&
-      needs.migrate.result == 'success'
+    if: needs.migrate.result == 'success'
     needs: migrate
     runs-on: ubuntu-latest
     env:
@@ -46,9 +44,7 @@ jobs:
     - run: terraform apply -auto-approve -no-color
 
   build_vue:
-    if: |
-      always() &&
-      needs.apply.result == 'success'
+    if: needs.apply.result == 'success'
     needs: apply
     runs-on: ubuntu-latest
     name: Build Vue
