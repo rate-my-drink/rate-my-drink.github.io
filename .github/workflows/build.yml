@@ -1,18 +1,57 @@
-name: Build Vue
+name: Build Vue & Migrate DB
 on:
   workflow_dispatch:
   push:
     branches:
-      - main
+    - main
 jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.PRODUCTION_PROJECT_ID }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: supabase/setup-cli@v1
+      with:
+        version: latest
+
+    - run: supabase link --project-ref $SUPABASE_PROJECT_ID
+    - run: supabase db push
+
+  apply:
+    # Only run this job if the previous job was successful
+    if: needs.migrate.result == 'success'
+    needs: migrate
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      TF_VAR_linked_project: ${{ secrets.PRODUCTION_PROJECT_ID }}
+    defaults:
+      run:
+        working-directory: supabase/remotes
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_wrapper: false
+
+    - run: terraform init
+    - run: terraform apply -auto-approve -no-color
+
   build_vue:
+    if: needs.apply.result == 'success'
+    needs: apply
     runs-on: ubuntu-latest
     name: Build Vue
     steps:
-      - uses: actions/checkout@v2
-      - id: Build-Vue
-        uses: xRealNeon/VuePagesAction@1.0.1
-        with:
-          username: "rate-my-drink"
-          reponame: "rate-my-drink.github.io"
-          token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
+    - uses: actions/checkout@v2
+    - id: Build-Vue
+      uses: xRealNeon/VuePagesAction@1.0.1
+      with:
+        username: "rate-my-drink"
+        reponame: "rate-my-drink.github.io"
+        token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
