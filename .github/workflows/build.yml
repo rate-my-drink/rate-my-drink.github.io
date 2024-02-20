@@ -27,6 +27,7 @@ jobs:
     if: |
       always() &&
       needs.migrate.result == 'success'
+    needs: migrate
     runs-on: ubuntu-latest
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -48,6 +49,7 @@ jobs:
     if: |
       always() &&
       needs.apply.result == 'success'
+    needs: apply
     runs-on: ubuntu-latest
     name: Build Vue
     steps:
