@@ -6,7 +6,7 @@ import { inject } from "vue";
 import { upload_image } from "../helpers/supabase/upload_image.ts";
 import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
-import SelectProducer from "../components/SelectProducer.vue";
+import SelectProducer from "../components/producer/SelectProducer.vue";
 
 const { userId, isUserVerified } = inject("userName");
 const producers = ref([]);
