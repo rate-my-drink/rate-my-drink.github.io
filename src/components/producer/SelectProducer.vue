@@ -4,7 +4,6 @@ import { supabase } from "../../config/supabase.ts";
 import { inject } from "vue";
 import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
-import NewProducer from "./NewProducer.vue";
 
 const { userId, isUserVerified } = inject("userName");
 const props = defineProps(["producerId"]);
@@ -33,7 +32,6 @@ getProducers();
 </script>
 
 <template>
-  <NewProducer class="hidden" />
   <label class="text-gray-500">Producer</label>
   <div>
     <input
@@ -42,8 +40,15 @@ getProducers();
       @focus="showProducer = true"
       @blur="showProducer = false"
     />
-    <ul v-show="showProducer">
-      <li v-for="producer in producers" :key="producer.id">
+    <ul
+      v-show="showProducer"
+      class="absolute min-w-96 rounded-xl border-2 border-solid border-gray-600 bg-white py-2"
+    >
+      <li
+        class="m-1 px-2 hover:bg-amber-500"
+        v-for="producer in producers"
+        :key="producer.id"
+      >
         {{ producer.name }}
       </li>
     </ul>
