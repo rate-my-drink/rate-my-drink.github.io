@@ -10,7 +10,7 @@ import SelectProducer from "../components/producer/SelectProducer.vue";
 
 const { userId, isUserVerified } = inject("userName");
 const producers = ref([]);
-const producerId = ref(null);
+const selectedProducer = ref(null);
 const previewImage = ref("");
 const previewImageType = ref("");
 const name = ref("");
@@ -42,11 +42,11 @@ async function uploadDrink() {
     $toast.error("The Drink most have a name");
     return;
   }
-  if (!producerId.value) {
+  if (!selectedProducer.value) {
     $toast.error("The Drink most have a producer");
     return;
   }
-  const folderName = `drinks/${producerId.value}`;
+  const folderName = `drinks/${selectedProducer.value.id}`;
 
   let imageId = null;
   if (previewImage.value) {
@@ -55,7 +55,7 @@ async function uploadDrink() {
   const { error } = await supabase.from("drinks").insert({
     name: name.value,
     description: description.value,
-    producer: producerId.value,
+    producer: selectedProducer.value.id,
     user_id: userId.value,
     image: imageId,
   });
@@ -108,7 +108,8 @@ getProducers();
               placeholder="Description of the drink"
             />
           </div>
-          <SelectProducer v-model="producerId" />
+          <div>Producer: {{ selectedProducer?.name }}</div>
+          <SelectProducer v-model:selectedProducer="selectedProducer" />
         </div>
 
         <label
