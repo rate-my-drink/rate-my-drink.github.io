@@ -35,6 +35,10 @@ function deselectText() {
 
 function submitProducer() {
   deselectText();
+  updateProducer();
+  producerInputText.value.blur();
+}
+function updateProducer() {
   const foundProducers = producers.value.filter((producer) => {
     return producer.name.toLowerCase() === producerName.value.toLowerCase();
   });
@@ -44,7 +48,6 @@ function submitProducer() {
   } else {
     selectedProducer.value = { name: producerName.value, id: null };
   }
-  producerInputText.value.blur();
 }
 
 function focusText() {
@@ -69,6 +72,7 @@ function selectProducer(producer) {
         v-model="producerName"
         @focus="focusText()"
         @blur="deselectText()"
+        @input="updateProducer()"
       />
     </label>
     <div
