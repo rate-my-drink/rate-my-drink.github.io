@@ -108,7 +108,8 @@ getProducers();
               placeholder="Description of the drink"
             />
           </div>
-          <div>Producer: {{ selectedProducer?.name }}</div>
+          <div>Producer name: {{ selectedProducer?.name }}</div>
+          <div>Producer id: {{ selectedProducer?.id }}</div>
           <SelectProducer v-model:selectedProducer="selectedProducer" />
         </div>
 
