@@ -63,17 +63,25 @@ function selectProducer(producer) {
 
 <template>
   <form @submit.prevent="submitProducer()">
-    <label class="text-gray-500"
+    <label class="w-full text-gray-500"
       >Producer
-      <input
-        type="text"
-        class="border-grey-light block w-full rounded border p-3"
-        ref="producerInputText"
-        v-model="producerName"
-        @focus="focusText()"
-        @blur="deselectText()"
-        @input="updateProducer()"
-      />
+      <div class="flex w-full justify-end">
+        <input
+          type="text"
+          class="border-grey-light block w-full rounded border p-3"
+          ref="producerInputText"
+          v-model="producerName"
+          @focus="focusText()"
+          @blur="deselectText()"
+          @input="updateProducer()"
+        />
+        <div
+          v-if="selectedProducer?.id == null"
+          class="absolute m-1 h-fit rounded-full bg-blue-600 p-2 text-justify text-xs font-bold text-white"
+        >
+          NEW
+        </div>
+      </div>
     </label>
     <div
       v-if="showProducer && filterProducers.length > 0"
