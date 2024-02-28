@@ -22,4 +22,9 @@ export default defineConfig({
     // (requires installing happy-dom as a peer dependency)
     environment: "happy-dom",
   },
+  server: {
+    watch: {
+      usePolling: true,
+    },
+  },
 });

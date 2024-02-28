@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { supabase } from "../../config/supabase.ts";
 import "vue-toast-notification/dist/theme-sugar.css";
 
@@ -7,6 +7,7 @@ const selectedProducer = defineModel("selectedProducer");
 const showProducer = ref(false);
 const producerName = ref("");
 const producers = ref([]);
+const producerInputText = ref(null);
 
 // Get producers from supabase
 async function getProducers() {
@@ -31,9 +32,25 @@ getProducers();
 function deselectText() {
   showProducer.value = false;
 }
+
+function submitProducer() {
+  deselectText();
+  const foundProducers = producers.value.filter((producer) => {
+    return producer.name.toLowerCase() === producerName.value.toLowerCase();
+  });
+
+  if (foundProducers.length > 0) {
+    selectedProducer.value = foundProducers[0];
+  } else {
+    selectedProducer.value = { name: producerName.value, id: null };
+  }
+  producerInputText.value.blur();
+}
+
 function focusText() {
   showProducer.value = true;
 }
+
 function selectProducer(producer) {
   selectedProducer.value = producer;
   producerName.value = producer.name;
@@ -42,11 +59,12 @@ function selectProducer(producer) {
 </script>
 
 <template>
-  <label class="text-gray-500">Producer</label>
-  <div>
+  <form @submit.prevent="submitProducer()">
+    <label class="text-gray-500">Producer</label>
     <input
       type="text"
       class="border-grey-light mb-4 block w-full rounded border p-3"
+      ref="producerInputText"
       v-model="producerName"
       @focus="focusText()"
       @blur="deselectText()"
@@ -64,5 +82,5 @@ function selectProducer(producer) {
         {{ producer.name }}
       </div>
     </div>
-  </div>
+  </form>
 </template>
