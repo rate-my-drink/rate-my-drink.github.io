@@ -60,27 +60,37 @@ function selectProducer(producer) {
 
 <template>
   <form @submit.prevent="submitProducer()">
-    <label class="text-gray-500">Producer</label>
-    <input
-      type="text"
-      class="border-grey-light mb-4 block w-full rounded border p-3"
-      ref="producerInputText"
-      v-model="producerName"
-      @focus="focusText()"
-      @blur="deselectText()"
-    />
+    <label class="text-gray-500"
+      >Producer
+      <input
+        type="text"
+        class="border-grey-light block w-full rounded border p-3"
+        ref="producerInputText"
+        v-model="producerName"
+        @focus="focusText()"
+        @blur="deselectText()"
+      />
+    </label>
     <div
-      v-show="showProducer"
+      v-if="showProducer && filterProducers.length > 0"
       class="absolute min-w-96 rounded-xl border-2 border-solid border-gray-600 bg-white py-2"
     >
       <div
-        class="m-1 px-2 hover:bg-amber-500"
+        class="px-2 hover:bg-amber-500"
         v-for="producer in filterProducers"
         :key="producer.id"
         v-on:mousedown="selectProducer(producer)"
       >
-        {{ producer.name }}
+        <div class="p-1">
+          {{ producer.name }}
+        </div>
       </div>
+    </div>
+    <div
+      v-else-if="showProducer && filterProducers.length == 0"
+      class="absolute min-w-96 rounded-xl border-2 border-solid border-gray-600 bg-white py-2"
+    >
+      <div class="p-1 px-2 text-gray-600">No producer found</div>
     </div>
   </form>
 </template>
