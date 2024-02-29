@@ -32,6 +32,19 @@ async function getProducers() {
   producers.value = sorted_producers;
 }
 
+async function createProducer() {
+  const { data, error } = await supabase
+    .from("producers")
+    .insert({
+      name: selectedProducer.value.name,
+    })
+    .select("id");
+  if (error) {
+    $toast.error("There was an error creating the producer");
+    return;
+  }
+  selectedProducer.value.id = data[0].id;
+}
 // Upload a drink to supabase
 async function uploadDrink() {
   if (!isUserVerified()) {
@@ -42,9 +55,12 @@ async function uploadDrink() {
     $toast.error("The Drink most have a name");
     return;
   }
-  if (!selectedProducer.value) {
+  if (!selectedProducer.value?.name) {
     $toast.error("The Drink most have a producer");
     return;
+  }
+  if (!selectedProducer.value.id) {
+    await createProducer();
   }
   const folderName = `drinks/${selectedProducer.value.id}`;
 
