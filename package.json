@@ -7,6 +7,7 @@
     "dev": "vite --mode localhost",
     "dev-remote": "vite",
     "supabase": "npx supabase@beta start",
+    "supabase-reset": "npx supabase@beta db reset",
     "supabase-stop": "npx supabase@beta stop",
     "build": "vite build",
     "preview": "vite preview",
