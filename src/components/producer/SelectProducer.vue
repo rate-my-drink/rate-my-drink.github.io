@@ -76,7 +76,7 @@ function selectProducer(producer) {
           @input="updateProducer()"
         />
         <div
-          v-if="selectedProducer?.id == null"
+          v-if="selectedProducer?.id == null && producerName.length > 0"
           class="absolute m-1 h-fit rounded-full bg-blue-600 p-2 text-justify text-xs font-bold text-white"
         >
           NEW
