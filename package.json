@@ -9,6 +9,8 @@
     "supabase": "npx supabase@beta start",
     "supabase-reset": "npx supabase@beta db reset",
     "supabase-stop": "npx supabase@beta stop",
+    "cypress": "npx cypress open coverage=true",
+    "cypress-headless": "npx cypress run --headless --browser chrome coverage=true",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
@@ -27,12 +29,14 @@
     "@testing-library/vue": "^8.0.0",
     "@vitejs/plugin-vue": "^4.2.3",
     "autoprefixer": "^10.4.15",
+    "cypress": "^13.6.6",
     "happy-dom": "^12.10.3",
     "postcss": "^8.4.28",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "supabase": "^1.142.2",
     "tailwindcss": "^3.3.3",
+    "typescript": "^5.3.3",
     "vite": "^4.4.5",
     "vitest": "^0.34.6"
   }
