@@ -74,6 +74,7 @@ function selectProducer(producer) {
           @focus="focusText()"
           @blur="deselectText()"
           @input="updateProducer()"
+          e2e-id="input-producer-name"
         />
         <div
           v-if="selectedProducer?.id == null && producerName.length > 0"
@@ -86,12 +87,14 @@ function selectProducer(producer) {
     <div
       v-if="showProducer && filterProducers.length > 0"
       class="absolute min-w-96 rounded-xl border-2 border-solid border-gray-600 bg-white py-2"
+      e2e-id="input-producer-options-list"
     >
       <div
         class="px-2 hover:bg-amber-500"
         v-for="producer in filterProducers"
         :key="producer.id"
         v-on:mousedown="selectProducer(producer)"
+        e2e-id="input-producer-option"
       >
         <div class="p-1">
           {{ producer.name }}
@@ -101,6 +104,7 @@ function selectProducer(producer) {
     <div
       v-else-if="showProducer && filterProducers.length == 0"
       class="absolute min-w-96 rounded-xl border-2 border-solid border-gray-600 bg-white py-2"
+      e2e-id="input-producer-no-options-list"
     >
       <div class="p-1 px-2 text-gray-600">No producer found</div>
     </div>

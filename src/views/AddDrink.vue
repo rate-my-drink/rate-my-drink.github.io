@@ -105,24 +105,30 @@ getProducers();
       <div class="flex h-full w-full flex-col justify-start md:flex-row">
         <div class="w-full p-4 md:w-1/2">
           <div>
-            <label class="text-gray-500">Name of the drink</label>
-            <input
-              type="text"
-              class="border-grey-light mb-4 block w-full rounded border p-3"
-              name="drinkName"
-              v-model="name"
-              placeholder="Name of the drink"
-            />
+            <label class="text-gray-500"
+              >Name of the drink
+              <input
+                type="text"
+                class="border-grey-light mb-4 block w-full rounded border p-3"
+                name="drinkName"
+                v-model="name"
+                placeholder="Name of the drink"
+                e2e-id="input-drink-name"
+              />
+            </label>
           </div>
           <div>
-            <label class="text-gray-500">Description of the drink</label>
-            <input
-              type="text"
-              class="border-grey-light mb-4 block w-full rounded border p-3"
-              name="drinkDescription"
-              v-model="description"
-              placeholder="Description of the drink"
-            />
+            <label class="text-gray-500"
+              >Description of the drink
+              <input
+                type="text"
+                class="border-grey-light mb-4 block w-full rounded border p-3"
+                name="drinkDescription"
+                v-model="description"
+                placeholder="Description of the drink"
+                e2e-id="input-drink-description"
+              />
+            </label>
           </div>
           <div>Producer name: {{ selectedProducer?.name }}</div>
           <div>Producer id: {{ selectedProducer?.id }}</div>
@@ -137,13 +143,19 @@ getProducers();
             class="hidden"
             accept="image/jpeg, image/png, image/jpg, image/webp"
             @change="uploadImage"
+            e2e-id="input-drink-image"
           />
           <span v-show="!previewImage"> Upload a image </span>
           <img :src="previewImage" class="h-full w-full" />
         </label>
       </div>
       <div class="flex justify-center">
-        <button type="button" class="button md:w-4/5" @click="uploadDrink">
+        <button
+          type="button"
+          class="button md:w-4/5"
+          @click="uploadDrink"
+          e2e-id="input-drink-submit"
+        >
           Upload
         </button>
       </div>
