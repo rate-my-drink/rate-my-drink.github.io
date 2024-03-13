@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode localhost",
+    "dev-remote": "vite",
     "supabase": "npx supabase@beta start",
+    "supabase-reset": "npx supabase@beta db reset",
     "supabase-stop": "npx supabase@beta stop",
     "build": "vite build",
     "preview": "vite preview",
@@ -31,6 +33,7 @@
     "prettier-plugin-tailwindcss": "^0.5.11",
     "supabase": "^1.142.2",
     "tailwindcss": "^3.3.3",
+    "typescript": "^5.3.3",
     "vite": "^4.4.5",
     "vitest": "^0.34.6"
   }

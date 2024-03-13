@@ -6,10 +6,11 @@ import { inject } from "vue";
 import { upload_image } from "../helpers/supabase/upload_image.ts";
 import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
+import SelectProducer from "../components/producer/SelectProducer.vue";
 
 const { userId, isUserVerified } = inject("userName");
 const producers = ref([]);
-const producerId = ref(null);
+const selectedProducer = ref(null);
 const previewImage = ref("");
 const previewImageType = ref("");
 const name = ref("");
@@ -31,6 +32,19 @@ async function getProducers() {
   producers.value = sorted_producers;
 }
 
+async function createProducer() {
+  const { data, error } = await supabase
+    .from("producers")
+    .insert({
+      name: selectedProducer.value.name,
+    })
+    .select("id");
+  if (error) {
+    $toast.error("There was an error creating the producer");
+    return;
+  }
+  selectedProducer.value.id = data[0].id;
+}
 // Upload a drink to supabase
 async function uploadDrink() {
   if (!isUserVerified()) {
@@ -41,11 +55,14 @@ async function uploadDrink() {
     $toast.error("The Drink most have a name");
     return;
   }
-  if (!producerId.value) {
+  if (!selectedProducer.value?.name) {
     $toast.error("The Drink most have a producer");
     return;
   }
-  const folderName = `drinks/${producerId.value}`;
+  if (!selectedProducer.value.id) {
+    await createProducer();
+  }
+  const folderName = `drinks/${selectedProducer.value.id}`;
 
   let imageId = null;
   if (previewImage.value) {
@@ -54,7 +71,7 @@ async function uploadDrink() {
   const { error } = await supabase.from("drinks").insert({
     name: name.value,
     description: description.value,
-    producer: producerId.value,
+    producer: selectedProducer.value.id,
     user_id: userId.value,
     image: imageId,
   });
@@ -88,41 +105,34 @@ getProducers();
       <div class="flex h-full w-full flex-col justify-start md:flex-row">
         <div class="w-full p-4 md:w-1/2">
           <div>
-            <label class="text-gray-500">Name of the drink</label>
-            <input
-              type="text"
-              class="border-grey-light mb-4 block w-full rounded border p-3"
-              name="drinkName"
-              v-model="name"
-              placeholder="Name of the drink"
-            />
+            <label class="text-gray-500"
+              >Name of the drink
+              <input
+                type="text"
+                class="border-grey-light mb-4 block w-full rounded border p-3"
+                name="drinkName"
+                v-model="name"
+                placeholder="Name of the drink"
+                e2e-id="input-drink-name"
+              />
+            </label>
           </div>
           <div>
-            <label class="text-gray-500">Description of the drink</label>
-            <input
-              type="text"
-              class="border-grey-light mb-4 block w-full rounded border p-3"
-              name="drinkDescription"
-              v-model="description"
-              placeholder="Description of the drink"
-            />
+            <label class="text-gray-500"
+              >Description of the drink
+              <input
+                type="text"
+                class="border-grey-light mb-4 block w-full rounded border p-3"
+                name="drinkDescription"
+                v-model="description"
+                placeholder="Description of the drink"
+                e2e-id="input-drink-description"
+              />
+            </label>
           </div>
-          <div>
-            <label class="text-gray-500">Producer</label>
-            <select
-              class="border-grey-light mb-4 block w-full rounded border p-3"
-              v-model="producerId"
-            >
-              <option value="" disabled selected>Select a producer</option>
-              <option
-                v-for="producer in producers"
-                :key="producer.id"
-                :value="producer.id"
-              >
-                {{ producer.name }}
-              </option>
-            </select>
-          </div>
+          <div>Producer name: {{ selectedProducer?.name }}</div>
+          <div>Producer id: {{ selectedProducer?.id }}</div>
+          <SelectProducer v-model:selectedProducer="selectedProducer" />
         </div>
 
         <label
@@ -133,13 +143,19 @@ getProducers();
             class="hidden"
             accept="image/jpeg, image/png, image/jpg, image/webp"
             @change="uploadImage"
+            e2e-id="input-drink-image"
           />
           <span v-show="!previewImage"> Upload a image </span>
           <img :src="previewImage" class="h-full w-full" />
         </label>
       </div>
       <div class="flex justify-center">
-        <button type="button" class="button md:w-4/5" @click="uploadDrink">
+        <button
+          type="button"
+          class="button md:w-4/5"
+          @click="uploadDrink"
+          e2e-id="input-drink-submit"
+        >
           Upload
         </button>
       </div>
