@@ -120,7 +120,6 @@ function previousPage() {
 
 function toggleShowFilters() {
   showFilters.value = !showFilters.value;
-  console.log(showFilters.value);
 }
 getAllProducers();
 getDrinks();
