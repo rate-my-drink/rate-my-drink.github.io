@@ -18,10 +18,5 @@ export default createRouter({
       component: () => import("@/views/AddDrink.vue"),
       name: "AddDrink",
     },
-    {
-      path: import.meta.env.BASE_URL + "logo",
-      component: () => import("@/views/Logo.vue"),
-      name: "Logo",
-    },
   ],
 });
