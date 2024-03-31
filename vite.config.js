@@ -14,7 +14,7 @@ export default defineConfig({
         name: "Caffeine Critics",
         short_name: "Caffeine Critics",
         description: "Caffeine Critics: Rate teas and coffees you love or hate",
-        theme_color: "#e20000",
+        theme_color: "#f59e0b",
         icons: [
           {
             src: "logo_192.png",
