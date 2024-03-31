@@ -8,7 +8,27 @@ export default defineConfig({
     vue({
       reactivityTransform: true,
     }),
-    VitePWA({ registerType: "autoUpdate" }),
+    VitePWA({
+      includeAssets: ["logo.svg", "apple-touch-icon.png"],
+      manifest: {
+        name: "Caffeine Critics",
+        short_name: "Caffeine Critics",
+        description: "Caffeine Critics: Rate teas and coffees you love or hate",
+        theme_color: "#e20000",
+        icons: [
+          {
+            src: "logo_192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "logo_512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+      },
+    }),
   ],
   resolve: {
     alias: {
