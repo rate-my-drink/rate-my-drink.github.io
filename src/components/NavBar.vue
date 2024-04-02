@@ -11,7 +11,9 @@ const showSignUp = ref(false);
 <template>
   <SingUp v-show="showSignUp" v-model="showSignUp" />
   <div class="flex items-center justify-around bg-amber-500 py-6">
-    <img :src="'logo.svg'" class="h-12" />
+    <router-link class="px-4 text-2xl font-bold text-black" to="/">
+      <img :src="'icons/logo.svg'" class="h-12" />
+    </router-link>
     <router-link class="px-4 text-2xl font-bold text-black" to="/"
       >Home</router-link
     >
