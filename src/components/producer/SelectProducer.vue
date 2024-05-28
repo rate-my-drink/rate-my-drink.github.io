@@ -4,7 +4,6 @@ import { supabase } from "../../config/supabase.ts";
 import "vue-toast-notification/dist/theme-sugar.css";
 
 const selectedProducer = defineModel("selectedProducer");
-const showProducer = ref(false);
 const producerName = ref("");
 const producers = ref([]);
 const producerInputText = ref(null);
@@ -23,10 +22,6 @@ async function getProducers() {
 
 getProducers();
 
-function deselectText() {
-  showProducer.value = false;
-}
-
 function submitProducer() {
   deselectText();
   updateProducer();
@@ -43,10 +38,6 @@ function updateProducer() {
     selectedProducer.value = { name: producerName.value, id: null };
   }
 }
-
-function focusText() {
-  showProducer.value = true;
-}
 </script>
 
 <template>
@@ -60,8 +51,6 @@ function focusText() {
           ref="producerInputText"
           list="all-current-producers"
           v-model="producerName"
-          @focus="focusText()"
-          @blur="deselectText()"
           @input="updateProducer()"
           e2e-id="input-producer-name"
         />
