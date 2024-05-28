@@ -23,7 +23,6 @@ async function getProducers() {
 getProducers();
 
 function submitProducer() {
-  deselectText();
   updateProducer();
   producerInputText.value.blur();
 }
