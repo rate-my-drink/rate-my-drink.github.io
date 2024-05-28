@@ -6,7 +6,6 @@ import "vue-toast-notification/dist/theme-sugar.css";
 const selectedProducer = defineModel("selectedProducer");
 const producerName = ref("");
 const producers = ref([]);
-const producerInputText = ref(null);
 
 // Get producers from supabase
 async function getProducers() {
@@ -22,10 +21,6 @@ async function getProducers() {
 
 getProducers();
 
-function submitProducer() {
-  updateProducer();
-  producerInputText.value.blur();
-}
 function updateProducer() {
   const foundProducers = producers.value.filter((producer) => {
     return producer.name.toLowerCase() === producerName.value.toLowerCase();
@@ -40,14 +35,13 @@ function updateProducer() {
 </script>
 
 <template>
-  <form @submit.prevent="submitProducer()">
+  <form @submit.prevent="updateProducer()">
     <label class="w-full text-gray-500"
       >Producer
       <div class="flex w-full justify-end">
         <input
           type="text"
           class="border-grey-light block w-full rounded border p-3"
-          ref="producerInputText"
           list="all-current-producers"
           v-model="producerName"
           @input="updateProducer()"
