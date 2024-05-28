@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
 import { supabase } from "../../config/supabase.ts";
-import "vue-toast-notification/dist/theme-sugar.css";
 
 const selectedProducer = defineModel("selectedProducer");
 const producerName = ref("");
